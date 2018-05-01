@@ -34,16 +34,17 @@ class JustRideView extends WatchUi.DataField {
 
     const LINE_A = 20;
     const LINE_B = 90;
-    const LINE_C = 170;
+    const LINE_C = 172;
     const LINE_D = 244;
 
     hidden var fields;
     hidden var heartRateZones = [];
+    hidden var newLap = false;
 
     function initialize() {
         fields = new Fields();
         heartRateZones = UserProfile.getHeartRateZones(UserProfile.HR_ZONE_SPORT_BIKING);
-        System.println("The user was born in " + heartRateZones);
+        System.println("The user HR zone " + heartRateZones);
     }
 
     function onLayout(dc) {
@@ -55,9 +56,13 @@ class JustRideView extends WatchUi.DataField {
     function onHide() {
     }
 
-    function drawLayout(dc) {
+    function onTimerLap(){
+        System.println("Lap");
+        newLap  = true;
+    }
 
-//            System.println( LINE_A+ "\n" );
+
+    function drawLayout(dc) {
 
         dc.setColor(LINE_COLOR, BACKGROUND_COLOR);
 
@@ -73,94 +78,15 @@ class JustRideView extends WatchUi.DataField {
 
     function onUpdate(dc) {
 
+        if (newLap){
+            fields.setNewLap(newLap);
+            newLap = false;
+        }
+
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_WHITE);
         dc.clear();
 
-        /* BOX A */
-        //top Left
-        textL(dc, 2, LINE_A+2, Graphics.FONT_XTINY,  "Distance");
-        //middle
-        textC(dc, dc.getWidth()/4, LINE_A+35, Graphics.FONT_NUMBER_MILD,  "---");
-//        textC(dc, dc.getWidth()/4, LINE_A+35, Graphics.FONT_NUMBER_MILD,  "30.3");
-        textL(dc, (dc.getWidth()/2)-17,47 , Graphics.FONT_XTINY,  "Lap");
-        textC(dc,  dc.getWidth()/4, LINE_A+60 , Graphics.FONT_SMALL,  toStr(fields.elapsedDistance));
-        textL(dc, (dc.getWidth()/2)-17,LINE_A+56 , Graphics.FONT_XTINY,  "Tot");
-
-
-        /* BOX B */
-        //top Left
-        textR(dc, dc.getWidth()-2, LINE_A+2, Graphics.FONT_XTINY,  "Elevation");
-//        textR(dc, dc.getWidth()-10, LINE_A+25, Graphics.FONT_SMALL,  "1200");
-//        textL(dc, 10+dc.getWidth()/2, LINE_A+25, Graphics.FONT_SMALL,  "12");
-        textC(dc, 3*dc.getWidth()/4, LINE_A+35, Graphics.FONT_NUMBER_MILD,  "---");
-//        textC(dc, 3*dc.getWidth()/4, LINE_A+35, Graphics.FONT_NUMBER_MILD,  "12.1");
-        textL(dc, dc.getWidth()-17,47 , Graphics.FONT_XTINY,  "%");
-        textC(dc,  3*dc.getWidth()/4, LINE_A+60 , Graphics.FONT_SMALL,  toStr(fields.totalAscent));
-        textL(dc, dc.getWidth()-17,LINE_A+56 , Graphics.FONT_XTINY,  "Tot");
-
-
-        /* BOX D */
-        textL(dc, 4,LINE_B+23, Graphics.FONT_XTINY,  "Avg");
-        textCnC(dc, dc.getWidth()/2,LINE_B+3, Graphics.FONT_XTINY,  "Speed");
-        textR(dc, dc.getWidth()-5,LINE_B+23, Graphics.FONT_XTINY,  "Vam");
-        textLC(dc, 3, LINE_B+45, Graphics.FONT_SMALL,  toStr(fields.avgSpeed));
-        textC(dc, dc.getWidth()/2, LINE_B+45, Graphics.FONT_NUMBER_THAI_HOT,  toStr(fields.speed));
-//        textRC(dc, dc.getWidth()-3, LINE_B+45, Graphics.FONT_SMALL,  "1000");
-        textRC(dc, dc.getWidth()-3, LINE_B+45, Graphics.FONT_SMALL,  "---");
-
-
-        /* BOX E */
-        //top Left
-        textL(dc, 2, LINE_C+2, Graphics.FONT_XTINY,  "HR");
-        //middle
-        textC(dc, dc.getWidth()/4, LINE_C+40, Graphics.FONT_NUMBER_MILD, toStr(fields.heartRate) );
-        textR(dc, (dc.getWidth()/2)-30,LINE_C+59 , Graphics.FONT_XTINY,  "Max");
-//        dc.drawLine((dc.getWidth()/2)-22, LINE_C+53, (dc.getWidth()/2)-6, LINE_C+53);
-        doHrBackground(dc,fields.heartRate);
-        textR(dc, (dc.getWidth()/2)-3,LINE_C+54 , Graphics.FONT_SMALL,  toStr(fields.maxHeartRate) );
-
-        /* BOX F */
-        //top Left
-        textR(dc, dc.getWidth()-2, LINE_C+2, Graphics.FONT_XTINY,  "RPM");
-//        textR(dc, dc.getWidth()-10, LINE_+25, Graphics.FONT_SMALL,  "1200");
-        doCadenceBackground(dc,fields.rpm);
-        textC(dc, 3*dc.getWidth()/4, LINE_C+40, Graphics.FONT_NUMBER_MILD, toStr(fields.rpm) );
-
-//        textL(dc, 36, 45, Graphics.FONT_NUMBER_MEDIUM,  fields.half);
-//        if (fields.halfSecs != null) {
-//            var length = dc.getTextWidthInPixels(fields.half, Graphics.FONT_NUMBER_MEDIUM);
-//            textL(dc, 36 + length + 1, 55, Graphics.FONT_NUMBER_MILD, fields.halfSecs);
-//        }
-//        textL(dc, 55, 18, Graphics.      , "HALF");
-//
-//        textL(dc, 112, 45, Graphics.FONT_NUMBER_MEDIUM,  fields.timer);
-//        if (fields.timerSecs != null) {
-//            var length = dc.getTextWidthInPixels(fields.timer, Graphics.FONT_NUMBER_MEDIUM);
-//            textL(dc, 112 + length + 1, 55, Graphics.FONT_NUMBER_MILD, fields.timerSecs);
-//        }
-//
-//        textL(dc, 120, 18, Graphics.FONT_XTINY,  "TIMER");
-//
-//        doCadenceBackground(dc, fields.cadenceN);
-//        textC(dc, 30, 107, Graphics.FONT_NUMBER_MEDIUM, fields.cadence);
-//        textC(dc, 30, 79, Graphics.FONT_XTINY,  "CAD");
-//
-//        textC(dc, 110, 107, Graphics.FONT_NUMBER_MEDIUM, fields.pace10s);
-//        textL(dc, 78, 79, Graphics.FONT_XTINY,  "PACE 10s");
-//
-//        doHrBackground(dc, fields.hrN);
-//        textC(dc, 180, 107, Graphics.FONT_NUMBER_MEDIUM, fields.hr);
-//        textC(dc, 180, 79, Graphics.FONT_XTINY,  "HR");
-//
-//
-//        textC(dc, 66, 154, Graphics.FONT_NUMBER_MEDIUM, fields.dist);
-//        textL(dc, 54, 186, Graphics.FONT_XTINY, "DIST");
-//
-//        textC(dc, 150, 154, Graphics.FONT_NUMBER_MEDIUM, fields.paceAvg);
-//        textL(dc, 124, 186, Graphics.FONT_XTINY, "A PACE");
-//
-//        textL(dc, 75, 206, Graphics.FONT_TINY, fields.time);
-
+        drawBoxes(dc);
         //Upper Bar
         drawBattery(dc);
         drawTime(dc);
@@ -171,11 +97,68 @@ class JustRideView extends WatchUi.DataField {
         return true;
     }
 
+    function drawBoxes(dc){
+    /* BOX A */
+            //top Left
+            textL(dc, 2, LINE_A+2, Graphics.FONT_XTINY,  "Distance (m)");
+            //middle
+            textC(dc, dc.getWidth()/4, LINE_A+35, Graphics.FONT_NUMBER_MILD, fields.elapsedLapDistance);
+    //        textC(dc, dc.getWidth()/4, LINE_A+35, Graphics.FONT_NUMBER_MILD,  "30.3");
+            textL(dc, (dc.getWidth()/2)-17,47 , Graphics.FONT_XTINY,  "Lap");
+            textC(dc,  dc.getWidth()/4, LINE_A+60 , Graphics.FONT_SMALL,  fields.elapsedDistance);
+            textL(dc, (dc.getWidth()/2)-17,LINE_A+56 , Graphics.FONT_XTINY,  "Tot");
+
+
+            /* BOX B */
+            //top Left
+            textR(dc, dc.getWidth()-2, LINE_A+2, Graphics.FONT_XTINY,  "Climb (m)");
+    //        textL(dc, 10+dc.getWidth()/2, LINE_A+25, Graphics.FONT_SMALL,  "12");
+            textC(dc, 3*dc.getWidth()/4, LINE_A+35, Graphics.FONT_NUMBER_MILD,  fields.totalAscent);
+    //        textC(dc, 3*dc.getWidth()/4, LINE_A+35, Graphics.FONT_NUMBER_MILD,  "12.1");
+            textL(dc, dc.getWidth()-17,47 , Graphics.FONT_XTINY,  "Asc");
+            textC(dc,  3*dc.getWidth()/4, LINE_A+60 , Graphics.FONT_SMALL, fields.altitude);
+            textL(dc, dc.getWidth()-17,LINE_A+56 , Graphics.FONT_XTINY,  "Alt");
+
+
+            /* BOX D */
+            textL(dc, 8,LINE_B+23, Graphics.FONT_XTINY,  "Avg");
+            textCnC(dc, dc.getWidth()/2,LINE_B+3, Graphics.FONT_XTINY,  "Speed (km/h)");
+            textR(dc, dc.getWidth()-16,LINE_B+18, Graphics.FONT_XTINY,  "%");
+            textLC(dc, 6, LINE_B+45, Graphics.FONT_SMALL,  fields.avgSpeed);
+            textC(dc, dc.getWidth()/2, LINE_B+45, Graphics.FONT_NUMBER_THAI_HOT, fields.speed);
+    //        textRC(dc, dc.getWidth()-3, LINE_B+45, Graphics.FONT_SMALL,  "1000");
+            textRC(dc, dc.getWidth()-3, LINE_B+45, Graphics.FONT_NUMBER_MILD,  fields.climbGrade.format("%01d"));
+//            textRC(dc, dc.getWidth()-3, LINE_B+45, Graphics.FONT_NUMBER_MILD,  "18");
+
+            textCnC(dc, dc.getWidth()/2, LINE_B+64, Graphics.FONT_SMALL,  "^ "+ fields.vam);
+            textL(dc, (dc.getWidth()/2)+25, LINE_B+69, Graphics.FONT_XTINY,  "VAM");
+
+
+            /* BOX E */
+            //top Left
+            textL(dc, 2, LINE_C+2, Graphics.FONT_XTINY,  "HR");
+            //middle
+            textC(dc, dc.getWidth()/4, LINE_C+40, Graphics.FONT_NUMBER_MILD, fields.heartRate?fields.heartRate:"--") ;
+            textR(dc, (dc.getWidth()/2)-30,LINE_C+59 , Graphics.FONT_XTINY,  "Max");
+    //        dc.drawLine((dc.getWidth()/2)-22, LINE_C+53, (dc.getWidth()/2)-6, LINE_C+53);
+            doHrBackground(dc,fields.heartRate);
+            textR(dc, (dc.getWidth()/2)-3,LINE_C+54 , Graphics.FONT_SMALL, fields.maxHeartRate?fields.maxHeartRate:"--") ;
+
+            /* BOX F */
+            //top Left
+            textR(dc, dc.getWidth()-2, LINE_C+2, Graphics.FONT_XTINY,  "RPM");
+    //        textR(dc, dc.getWidth()-10, LINE_+25, Graphics.FONT_SMALL,  "1200");
+            doCadenceBackground(dc,fields.rpm);
+            textC(dc, 3*dc.getWidth()/4, LINE_C+40, Graphics.FONT_NUMBER_MILD, fields.rpm?fields.rpm:"--" );
+    }
+
+
     function doHrBackground(dc, hr) {
         if (hr == null) {
             return;
         }
-        hr = 90;
+
+
         var color;
         var zone;
         if (hr >= heartRateZones[5]) {
@@ -202,9 +185,9 @@ class JustRideView extends WatchUi.DataField {
         }
 
         dc.setColor(color, Graphics.COLOR_TRANSPARENT);
-        dc.fillRectangle(25, LINE_C,  (hr*70/173), 15);
+        dc.fillRectangle(18, LINE_C,  (hr*74/173), 15);
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
-        textR(dc, dc.getWidth()/2-4, LINE_C+2, Graphics.FONT_XTINY,  "Z"+zone);
+        textR(dc, dc.getWidth()/2-4, LINE_C+2, Graphics.FONT_XTINY,  "z"+zone);
 
     }
 
@@ -212,8 +195,6 @@ class JustRideView extends WatchUi.DataField {
         if (cadence == null) {
             return;
         }
-
-        cadence = 50;
 
         var color;
         if (cadence >= 100) {
@@ -314,14 +295,6 @@ class JustRideView extends WatchUi.DataField {
     function textLC(dc, x, y, font, s) {
             if (s != null) {
                 dc.drawText(x, y, font, s, Graphics.TEXT_JUSTIFY_LEFT|Graphics.TEXT_JUSTIFY_VCENTER);
-            }
-    }
-
-    function toStr(o) {
-            if (o != null) {
-                return "" + o;
-            } else {
-                return "---";
             }
     }
 }

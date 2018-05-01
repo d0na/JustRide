@@ -1,14 +1,30 @@
 using Toybox.System as Sys;
 
 
+//https://github.com/dmuino/HMFields
+
 class Fields {
-    // last 60 seconds - 'current speed' samples
-    hidden var lastSecs = new [60];
-    hidden var curPos;
+
+    hidden var lastElapsedDistance = 0 ;
+    hidden var newLap = false;
+    hidden var curDistance = 0;
+    hidden var curElevation = 0;
+    hidden var lsGradeHelper;
+    hidden var climbRateHelper;
+    hidden var climbAvgRateHelper;
+
+
+//    hidden var rate20s;
+//    hidden var rate30s;
+//    hidden var rate40s;
+//
+//    hidden var m_prev;
 
     // public fields - usable after the user calls compute
+    var elapsedLapDistance = 0;
     var elapsedDistance;
     var elapsedTime;
+
     var lapDistance;
     var rpm;
     var maxRpm;
@@ -17,97 +33,132 @@ class Fields {
     var totalAscent;
     var heartRate;
     var maxHeartRate;
-    var grade;
+    var climbGrade;
+    var climbRate;
+    var climbAvgGrade;
     var speed;
     var time;
+    var altitude;
+    var lap = 0;
+
+
 
     function initialize() {
-        for (var i = 0; i < lastSecs.size(); ++i) {
-            lastSecs[i] = 0.0;
-        }
+//        rate20s = new ClimbRate(20);
+//        rate30s = new ClimbRate(30);
+//        rate40s = new ClimbRate(40);
 
-        curPos = 0;
+        lsGradeHelper = new LSGrade();
+        climbRateHelper = new ClimbRateField();
+        climbAvgRateHelper = new ClimbAvgGrade();
     }
 
     function compute(info) {
-        if (info.currentSpeed != null && info.currentSpeed > 0) {
-            var idx = curPos % lastSecs.size();
-            curPos++;
-            lastSecs[idx] = info.currentSpeed;
-        }
-
-//        var avg10s = getNAvg(lastSecs, curPos, 10);
-//        //distance, time, avgSpeed, avg10s
 
         var elapsed = info.elapsedTime;
         var elapsedSecs = null;
 
         if (elapsed != null) {
             elapsed /= 1000;
-
             if (elapsed >= 3600) {
                 elapsedSecs = (elapsed.toLong() % 60).format("%02d");
             }
         }
 
-//        dist = toDist(info.elapsedDistance);
-//        hr = toStr(info.currentHeartRate);
-//        hrN = info.currentHeartRate;
-//
-//        timerSecs = elapsedSecs;
-//        cadence = toStr(info.currentCadence);
-//        cadenceN = info.currentCadence;
-//        pace10s =  fmtSecs(toPace(avg10s));
-//        paceAvg = fmtSecs(toPace(info.averageSpeed));
-//        half = fmtSecs(expectedHalf);
-           time = fmtTime(Sys.getClockTime());
-//        halfSecs = halfSecs;
+        System.println("Altitude: "+info.altitude);
+        System.println("Distance: "+info.elapsedDistance);
+        System.println("Speed: "+info.currentSpeed);
 
-          elapsedTime = fmtSecs(info.elapsedTime);
-          speed = getSpeed(info.currentSpeed);
-          avgSpeed = getSpeed(info.averageSpeed);
-          totalAscent = toAlt(info.totalAscent);
-          rpm = info.currentCadence;
-          heartRate = info.currentHeartRate;
-          maxHeartRate = info.maxHeartRate;
-          elapsedDistance  = toDst(info.elapsedDistance);
+        time = fmtTime(Sys.getClockTime());
+
+        elapsedTime = fmtSecs(info.timerTime);
+        speed = getSpeed(info.currentSpeed);
+        avgSpeed = getSpeed(info.averageSpeed);
+        totalAscent = printAltitude(info.totalAscent);
+        rpm = info.currentCadence;
+        heartRate = info.currentHeartRate;
+        maxHeartRate = toStr(info.maxHeartRate);
+        elapsedDistance  = printDst(info.elapsedDistance);
+        elapsedLapDistance = printDst(calcLapDistance(info.elapsedDistance));
+
+        altitude = print0D(info.altitude);
+//        climbGrade = grade(info);
+        climbGrade = lsGradeHelper.gradient(info);
+//        vam = VamRate(info).format("%0d");
+
+
+//        vam = rate(info).format("%0d");
+
+        vam = print0D(climbRateHelper.rate(info));
+        climbRate = vam;
+        climbAvgGrade = climbAvgRateHelper.avgGrade(info);
     }
 
 
-    function toDst(dst){
+    function setNewLap(bol){
+        if (bol){
+            lap +=1;
+            newLap = true;
+        }
+    }
+
+    function calcLapDistance (dst){
+        if (dst == null || lastElapsedDistance== null){
+            return null;
+        }
+        return dst - lastElapsedDistance;
+    }
+
+
+
+
+    function printDst(dst){
+        var dist;
         if (dst == null) {
-            return null;
+            return "__._";
         }
 
-        return (dst /1000).format("%.1f");
+        if (Sys.getDeviceSettings().distanceUnits == Sys.UNIT_METRIC) {
+            dist = dst / 1000.0;
+        } else {
+            dist = dst / 1609.0;
+        }
+        return dist.format("%.1f");
     }
 
-    function toAlt(alt){
+    function printAltitude(alt){
         if (alt == null) {
-            return null;
+            return "___";
         }
+        return (alt).format("%01d");
+    }
 
-        return (alt).format("%.1f");
+    function print0D(val){
+        if (val == null || val == 0.0) {
+            return "0";
+        }
+        return (val).format("%01d");
     }
 
     function getSpeed(speed){
         if (speed == null || speed == 0) {
-                return null;
+                return "0.0";
         }
 
-//        var settings = Sys.getDeviceSettings();
-//        var unit = 1609; // miles
-//        if (settings.paceUnits == Sys.UNIT_METRIC) {
-//            unit = 1000; // km
-//        }
-        return (speed  * 3.6).format("%.1f");
+        var settings = Sys.getDeviceSettings();
+        var unit = 2.2; // miles
+        if (settings.paceUnits == Sys.UNIT_METRIC) {
+            unit = 3.6; // km
+        }
+        return (unit * speed).format("%.1f");
     }
+
 
     function toStr(o) {
             if (o != null) {
                 return "" + o;
             } else {
-                return "---";
+                return "--";
             }
         }
 
@@ -123,19 +174,47 @@ class Fields {
         return "" + h + ":" + clock.min.format("%02d");
     }
 
-    function fmtSecs(secs) {
-        if (secs == null) {
+    function fmtSecs(time) {
+
+        if (time == null) {
             return "--:--";
         }
 
-        var s = secs.toLong();
-        var hours = s / 3600;
-        s -= hours * 3600;
-        var minutes = s / 60;
-        s -= minutes * 60;
-        var fmt;
-         fmt = "" + hours + ":" + minutes.format("%02d")+":" + s.format("%02d");
+        time = time /1000;
+        var hour = (time / 3600).toLong();
+        var minute = (time / 60).toLong() - (hour * 60);
+        var second = time - (minute * 60) - (hour * 3600);
+
+        var fmt = Lang.format("$1$:$2$:$3$", [hour.format("%d"), minute.format("%02d"), second.format("%02d")]);
 
         return fmt;
     }
+
+        function VamRate(info){
+                if (info.altitude == null) {
+                    return "--";
+                }
+
+                if (m_prev == null) {
+                    m_prev = info.altitude;
+                }
+
+                // calculate the delta since the previous call
+                var delta = info.altitude - m_prev;
+                m_prev = info.altitude;
+
+                // this is the expensive part, adding the sample and creating
+                // the sums of all of the values
+                rate20s.add_sample(delta);
+                rate30s.add_sample(delta);
+                rate40s.add_sample(delta);
+
+                var ascent20s = rate20s.ascent() * 180;
+                var ascent30s = rate30s.ascent() * 120;
+                var ascent40s = rate40s.ascent() * 90;
+
+                // average of the delta values
+                return (ascent20s + ascent30s + ascent40s) / 3.0;
+        }
+
 }
