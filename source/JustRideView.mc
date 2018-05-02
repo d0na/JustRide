@@ -40,6 +40,8 @@ class JustRideView extends WatchUi.DataField {
     hidden var fields;
     hidden var heartRateZones = [];
     hidden var newLap = false;
+    hidden var ARROW_FONT;
+    hidden var HEART;
 
     function initialize() {
         fields = new Fields();
@@ -48,6 +50,8 @@ class JustRideView extends WatchUi.DataField {
     }
 
     function onLayout(dc) {
+        ARROW_FONT = WatchUi.loadResource(Rez.Fonts.ArrowFont);
+        HEART = WatchUi.loadResource(Rez.Fonts.Heart);
     }
 
     function onShow() {
@@ -100,56 +104,61 @@ class JustRideView extends WatchUi.DataField {
     function drawBoxes(dc){
     /* BOX A */
             //top Left
-            textL(dc, 2, LINE_A+2, Graphics.FONT_XTINY,  "Distance (m)");
+            textAlignLeft(dc, 5, LINE_A+2, Graphics.FONT_XTINY,  "Distance (m)");
             //middle
-            textC(dc, dc.getWidth()/4, LINE_A+35, Graphics.FONT_NUMBER_MILD, fields.elapsedLapDistance);
-    //        textC(dc, dc.getWidth()/4, LINE_A+35, Graphics.FONT_NUMBER_MILD,  "30.3");
-            textL(dc, (dc.getWidth()/2)-17,47 , Graphics.FONT_XTINY,  "Lap");
-            textC(dc,  dc.getWidth()/4, LINE_A+60 , Graphics.FONT_SMALL,  fields.elapsedDistance);
-            textL(dc, (dc.getWidth()/2)-17,LINE_A+56 , Graphics.FONT_XTINY,  "Tot");
+            textCentered(dc, dc.getWidth()/4, LINE_A+35, Graphics.FONT_NUMBER_MILD, fields.elapsedLapDistance);
+    //        textCentered(dc, dc.getWidth()/4, LINE_A+35, Graphics.FONT_NUMBER_MILD,  "30.3");
+            textAlignLeft(dc, (dc.getWidth()/2)-17,47 , Graphics.FONT_XTINY,  "Lap");
+            textCentered(dc,  dc.getWidth()/4, LINE_A+60 , Graphics.FONT_SMALL,  fields.elapsedDistance);
+            textAlignLeft(dc, (dc.getWidth()/2)-17,LINE_A+56 , Graphics.FONT_XTINY,  "Tot");
 
 
             /* BOX B */
             //top Left
-            textR(dc, dc.getWidth()-2, LINE_A+2, Graphics.FONT_XTINY,  "Climb (m)");
-    //        textL(dc, 10+dc.getWidth()/2, LINE_A+25, Graphics.FONT_SMALL,  "12");
-            textC(dc, 3*dc.getWidth()/4, LINE_A+35, Graphics.FONT_NUMBER_MILD,  fields.totalAscent);
-    //        textC(dc, 3*dc.getWidth()/4, LINE_A+35, Graphics.FONT_NUMBER_MILD,  "12.1");
-            textL(dc, dc.getWidth()-17,47 , Graphics.FONT_XTINY,  "Asc");
-            textC(dc,  3*dc.getWidth()/4, LINE_A+60 , Graphics.FONT_SMALL, fields.altitude);
-            textL(dc, dc.getWidth()-17,LINE_A+56 , Graphics.FONT_XTINY,  "Alt");
+            textAlignRight(dc, dc.getWidth()-2, LINE_A+2, Graphics.FONT_XTINY,  "Climb (m)");
+    //        textAlignLeft(dc, 10+dc.getWidth()/2, LINE_A+25, Graphics.FONT_SMALL,  "12");
+            textCentered(dc, 3*dc.getWidth()/4, LINE_A+35, Graphics.FONT_NUMBER_MILD,  fields.totalAscent);
+    //        textCentered(dc, 3*dc.getWidth()/4, LINE_A+35, Graphics.FONT_NUMBER_MILD,  "12.1");
+            textAlignLeft(dc, dc.getWidth()-17,47 , Graphics.FONT_XTINY,  "Asc");
+            textCentered(dc,  3*dc.getWidth()/4, LINE_A+60 , Graphics.FONT_SMALL, fields.altitude);
+            textAlignLeft(dc, dc.getWidth()-17,LINE_A+56 , Graphics.FONT_XTINY,  "Alt");
 
 
             /* BOX D */
-            textL(dc, 8,LINE_B+23, Graphics.FONT_XTINY,  "Avg");
+            textAlignLeft(dc, 8,LINE_B+23, Graphics.FONT_XTINY,  "Avg");
             textCnC(dc, dc.getWidth()/2,LINE_B+3, Graphics.FONT_XTINY,  "Speed (km/h)");
-            textR(dc, dc.getWidth()-16,LINE_B+18, Graphics.FONT_XTINY,  "%");
+            textAlignRight(dc, dc.getWidth()-16,LINE_B+18, Graphics.FONT_XTINY,  "%");
             textLC(dc, 6, LINE_B+45, Graphics.FONT_SMALL,  fields.avgSpeed);
-            textC(dc, dc.getWidth()/2, LINE_B+45, Graphics.FONT_NUMBER_THAI_HOT, fields.speed);
+            textCentered(dc, dc.getWidth()/2, LINE_B+45, Graphics.FONT_NUMBER_THAI_HOT, fields.speed);
     //        textRC(dc, dc.getWidth()-3, LINE_B+45, Graphics.FONT_SMALL,  "1000");
             textRC(dc, dc.getWidth()-3, LINE_B+45, Graphics.FONT_NUMBER_MILD,  fields.climbGrade.format("%01d"));
 //            textRC(dc, dc.getWidth()-3, LINE_B+45, Graphics.FONT_NUMBER_MILD,  "18");
 
-            textCnC(dc, dc.getWidth()/2, LINE_B+64, Graphics.FONT_SMALL,  "^ "+ fields.vam);
-            textL(dc, (dc.getWidth()/2)+25, LINE_B+69, Graphics.FONT_XTINY,  "VAM");
+
+            textAlignRight(dc, (dc.getWidth()/2)+10, LINE_B+64, Graphics.FONT_SMALL,  fields.vam);
+            textAlignLeft(dc, (dc.getWidth()/2)+25, LINE_B+69, Graphics.FONT_XTINY,  "VAM");
+            textAlignRight(dc, (dc.getWidth()/2)+23, LINE_B+62, ARROW_FONT,  "K");
 
 
             /* BOX E */
             //top Left
-            textL(dc, 2, LINE_C+2, Graphics.FONT_XTINY,  "HR");
+//            textAlignLeft(dc, 5, LINE_C+2, Graphics.FONT_XTINY,  "HR");
+            textAlignLeft(dc,5, LINE_C-4, HEART,  "|");
             //middle
-            textC(dc, dc.getWidth()/4, LINE_C+40, Graphics.FONT_NUMBER_MILD, fields.heartRate?fields.heartRate:"--") ;
-            textR(dc, (dc.getWidth()/2)-30,LINE_C+59 , Graphics.FONT_XTINY,  "Max");
+            textCentered(dc, dc.getWidth()/4, LINE_C+40, Graphics.FONT_NUMBER_MILD, fields.heartRate?fields.heartRate:"--") ;
+
+
+            textAlignRight(dc, (dc.getWidth()/2)-30,LINE_C+59 , Graphics.FONT_XTINY,  "Max");
     //        dc.drawLine((dc.getWidth()/2)-22, LINE_C+53, (dc.getWidth()/2)-6, LINE_C+53);
             doHrBackground(dc,fields.heartRate);
-            textR(dc, (dc.getWidth()/2)-3,LINE_C+54 , Graphics.FONT_SMALL, fields.maxHeartRate?fields.maxHeartRate:"--") ;
+            textAlignRight(dc, (dc.getWidth()/2)-3,LINE_C+54 , Graphics.FONT_SMALL, fields.maxHeartRate?fields.maxHeartRate:"--") ;
 
             /* BOX F */
             //top Left
-            textR(dc, dc.getWidth()-2, LINE_C+2, Graphics.FONT_XTINY,  "RPM");
-    //        textR(dc, dc.getWidth()-10, LINE_+25, Graphics.FONT_SMALL,  "1200");
+            textAlignRight(dc, dc.getWidth()-2, LINE_C+2, Graphics.FONT_XTINY,  "RPM");
+    //        textAlignRight(dc, dc.getWidth()-10, LINE_+25, Graphics.FONT_SMALL,  "1200");
             doCadenceBackground(dc,fields.rpm);
-            textC(dc, 3*dc.getWidth()/4, LINE_C+40, Graphics.FONT_NUMBER_MILD, fields.rpm?fields.rpm:"--" );
+            textCentered(dc, 3*dc.getWidth()/4, LINE_C+40, Graphics.FONT_NUMBER_MILD, fields.rpm?fields.rpm:"--" );
     }
 
 
@@ -187,7 +196,7 @@ class JustRideView extends WatchUi.DataField {
         dc.setColor(color, Graphics.COLOR_TRANSPARENT);
         dc.fillRectangle(18, LINE_C,  (hr*74/173), 15);
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
-        textR(dc, dc.getWidth()/2-4, LINE_C+2, Graphics.FONT_XTINY,  "z"+zone);
+        textAlignRight(dc, dc.getWidth()/2-4, LINE_C+2, Graphics.FONT_XTINY,  "z"+zone);
 
     }
 
@@ -247,14 +256,14 @@ class JustRideView extends WatchUi.DataField {
      function drawTime(dc) {
           var time = fields.time;
           dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
-          textL(dc,5,5,Graphics.FONT_XTINY,time);
+          textAlignLeft(dc,5,5,Graphics.FONT_XTINY,time);
       }
 
      function drawElapsedTime(dc) {
           var time = fields.elapsedTime;
 //          var formatedTime = time.hour+":"+time.min;
           dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
-          textC(dc,dc.getWidth()/2,11,Graphics.FONT_SMALL,time);
+          textCentered(dc,dc.getWidth()/2,11,Graphics.FONT_SMALL,time);
       }
 
     function compute(info) {
@@ -262,13 +271,13 @@ class JustRideView extends WatchUi.DataField {
         return 1;
     }
 
-    function textL(dc, x, y, font, s) {
+    function textAlignLeft(dc, x, y, font, s) {
         if (s != null) {
             dc.drawText(x, y, font, s, Graphics.TEXT_JUSTIFY_LEFT);
         }
     }
 
-    function textC(dc, x, y, font, s) {
+    function textCentered(dc, x, y, font, s) {
         if (s != null) {
             dc.drawText(x, y, font, s, Graphics.TEXT_JUSTIFY_CENTER|Graphics.TEXT_JUSTIFY_VCENTER);
         }
@@ -280,7 +289,7 @@ class JustRideView extends WatchUi.DataField {
         }
     }
 
-    function textR(dc, x, y, font, s) {
+    function textAlignRight(dc, x, y, font, s) {
         if (s != null) {
             dc.drawText(x, y, font, s, Graphics.TEXT_JUSTIFY_RIGHT);
         }

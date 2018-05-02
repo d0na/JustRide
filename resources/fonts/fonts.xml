@@ -1,0 +1,8 @@
+<!-- Used Hiero (due to not compatible OS to run BTFont, I own Mac/OSx) instead than BTFont to convert normal fonts in BMFont files .fnt .
+ Very easy to install (it's a Jar file) and use.
+ -->
+
+<fonts>
+    <font id="ArrowFont" filename="Arrow.fnt" filter="CK:" />
+    <font id="Heart" filename="Heart.fnt" filter="|:" />
+</fonts>
