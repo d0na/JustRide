@@ -196,15 +196,22 @@ class JustRideView extends WatchUi.DataField {
         return x & 1;
     }
 
+    function getHeartValueRange(hr){
+        return (hr/179.0)*90;
+    }
+
+    function getCadenceValueRange(rpm){
+        return (rpm/120.0)*80;
+    }
+
     function doHrBackground(dc, hr) {
         if (hr == null) {
             return;
         }
 
-
         var color;
         var zone;
-        var range = (hr/185.0)*80;   //inserert value from array
+        var range = getHeartValueRange(hr);   //inserert value from array
         if (hr >= heartRateZones[5]) {
             zone = 6;
             color = Graphics.COLOR_PURPLE;
@@ -257,7 +264,7 @@ class JustRideView extends WatchUi.DataField {
             color = Graphics.COLOR_PURPLE;
         }
         dc.setColor(color, Graphics.COLOR_TRANSPARENT);
-        dc.fillRectangle(dc.getWidth()/2, LINE_C, cadence*54/80, 15);
+        dc.fillRectangle(dc.getWidth()/2, LINE_C, getCadenceValueRange(cadence), 15);
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
     }
 
@@ -265,15 +272,34 @@ class JustRideView extends WatchUi.DataField {
         var leftOffset = 15;
         var rightOffset = 2;
         var space = (((dc.getWidth()/2)-leftOffset-rightOffset)/5);
+        var zone =7;
+        if (hr != null){
+        if (hr >= heartRateZones[5]) {
+            zone = 6;
+        } else if (hr > heartRateZones[4]) {
+            zone = 5;
+        } else if (hr > heartRateZones[3]) {
+            zone = 4;
+        } else if (hr > heartRateZones[2]) {
+            zone = 3;
+        } else if (hr > heartRateZones[1]) {
+            zone = 2;
+        } else if (hr > heartRateZones[0]) {
+            zone = 1;
+        } else {
+            zone = 0;
+        }
+        }
 
         for (var i = 0; i < heartRateZones.size(); i++) {
             if (i > 0){
-                if (hr != null && hr >= heartRateZones[i]){
+                if (zone == i){
                     dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
                 } else {
-                   dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_TRANSPARENT);
+                   dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
                 }
-            textAlignRight(dc, ((i)*space)+leftOffset, LINE_C+2, Graphics.FONT_XTINY,  i);
+//            textAlignRight(dc, ((i)*space)+leftOffset, LINE_C+2, Graphics.FONT_XTINY,  i);
+            textAlignRight(dc, getHeartValueRange(heartRateZones[i]), LINE_C+2, Graphics.FONT_XTINY,  i);
             }
             dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_WHITE);
         }
