@@ -127,7 +127,7 @@ class JustRideView extends WatchUi.DataField {
             /* BOX D */
             textAlignLeft(dc, 8,LINE_B+23, Graphics.FONT_XTINY,  "Avg");
             textCnC(dc, dc.getWidth()/2,LINE_B+3, Graphics.FONT_XTINY,  "Speed (km/h)");
-            textAlignRight(dc, dc.getWidth()-16,LINE_B+18, Graphics.FONT_XTINY,  "%");
+            showGradeIcon(dc,fields.climbGrade);
             textLC(dc, 6, LINE_B+45, Graphics.FONT_SMALL,  fields.avgSpeed);
             textCentered(dc, dc.getWidth()/2, LINE_B+45, Graphics.FONT_NUMBER_THAI_HOT, fields.speed);
     //        textRC(dc, dc.getWidth()-3, LINE_B+45, Graphics.FONT_SMALL,  "1000");
@@ -136,21 +136,23 @@ class JustRideView extends WatchUi.DataField {
 
 
             textAlignRight(dc, (dc.getWidth()/2)+10, LINE_B+64, Graphics.FONT_SMALL,  fields.vam);
-            textAlignLeft(dc, (dc.getWidth()/2)+25, LINE_B+69, Graphics.FONT_XTINY,  "VAM");
+            textAlignLeft(dc, (dc.getWidth()/2)+25, LINE_B+69, Graphics.FONT_XTINY,  "m/s");
             textAlignRight(dc, (dc.getWidth()/2)+23, LINE_B+62, ARROW_FONT,  "K");
 
 
             /* BOX E */
             //top Left
 //            textAlignLeft(dc, 5, LINE_C+2, Graphics.FONT_XTINY,  "HR");
-            textAlignLeft(dc,5, LINE_C-4, HEART,  "|");
+//            textAlignLeft(dc,3, LINE_C-8, HEART,  "|");
+            showBlinkingHeart(dc,fields.heartRate);
             //middle
             textCentered(dc, dc.getWidth()/4, LINE_C+40, Graphics.FONT_NUMBER_MILD, fields.heartRate?fields.heartRate:"--") ;
-
 
             textAlignRight(dc, (dc.getWidth()/2)-30,LINE_C+59 , Graphics.FONT_XTINY,  "Max");
     //        dc.drawLine((dc.getWidth()/2)-22, LINE_C+53, (dc.getWidth()/2)-6, LINE_C+53);
             doHrBackground(dc,fields.heartRate);
+            showHeartRateZone(dc,fields.heartRate);
+
             textAlignRight(dc, (dc.getWidth()/2)-3,LINE_C+54 , Graphics.FONT_SMALL, fields.maxHeartRate?fields.maxHeartRate:"--") ;
 
             /* BOX F */
@@ -162,6 +164,38 @@ class JustRideView extends WatchUi.DataField {
     }
 
 
+    function showBlinkingHeart(dc,hr){
+        var time = System.getClockTime();
+        var s = time.sec;
+        if ((hr != null) && (hr > 0) && s != null){
+            if (isOdd(s)){
+                dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_WHITE);
+            } else {
+                dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_WHITE);
+            }
+        }
+        textAlignLeft(dc,3, LINE_C-8, HEART,  "|");
+        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_WHITE);
+
+    }
+
+
+
+    function showGradeIcon(dc,grade){
+        dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_WHITE);
+        if (grade >= 0){
+            textAlignRight(dc, dc.getWidth()-1,LINE_B+12, ARROW_FONT,  "O");
+        } else {
+            textAlignRight(dc, dc.getWidth()-1,LINE_B+12, ARROW_FONT,  "P");
+        }
+        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_WHITE);
+        textAlignRight(dc, dc.getWidth()-16,LINE_B+14, Graphics.FONT_XTINY,  "%");
+    }
+
+    function isOdd(x){
+        return x & 1;
+    }
+
     function doHrBackground(dc, hr) {
         if (hr == null) {
             return;
@@ -170,6 +204,7 @@ class JustRideView extends WatchUi.DataField {
 
         var color;
         var zone;
+        var range = (hr/185.0)*80;   //inserert value from array
         if (hr >= heartRateZones[5]) {
             zone = 6;
             color = Graphics.COLOR_PURPLE;
@@ -194,9 +229,9 @@ class JustRideView extends WatchUi.DataField {
         }
 
         dc.setColor(color, Graphics.COLOR_TRANSPARENT);
-        dc.fillRectangle(18, LINE_C,  (hr*74/173), 15);
+        dc.fillRectangle(18, LINE_C,  (range)-18, 15);
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
-        textAlignRight(dc, dc.getWidth()/2-4, LINE_C+2, Graphics.FONT_XTINY,  "z"+zone);
+//        textAlignRight(dc, dc.getWidth()/2-4, LINE_C+2, Graphics.FONT_XTINY,  "z"+zone);
 
     }
 
@@ -224,6 +259,24 @@ class JustRideView extends WatchUi.DataField {
         dc.setColor(color, Graphics.COLOR_TRANSPARENT);
         dc.fillRectangle(dc.getWidth()/2, LINE_C, cadence*54/80, 15);
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
+    }
+
+    function showHeartRateZone(dc,hr){
+        var leftOffset = 15;
+        var rightOffset = 2;
+        var space = (((dc.getWidth()/2)-leftOffset-rightOffset)/5);
+
+        for (var i = 0; i < heartRateZones.size(); i++) {
+            if (i > 0){
+                if (hr != null && hr >= heartRateZones[i]){
+                    dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
+                } else {
+                   dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_TRANSPARENT);
+                }
+            textAlignRight(dc, ((i)*space)+leftOffset, LINE_C+2, Graphics.FONT_XTINY,  i);
+            }
+            dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_WHITE);
+        }
     }
 
     function drawBattery(dc) {

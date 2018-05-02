@@ -77,6 +77,7 @@ class Fields {
         totalAscent = printAltitude(info.totalAscent);
         rpm = info.currentCadence;
         heartRate = info.currentHeartRate;
+//        heartRate = 170;
         maxHeartRate = toStr(info.maxHeartRate);
         elapsedDistance  = printDst(info.elapsedDistance);
         elapsedLapDistance = printDst(calcLapDistance(info.elapsedDistance));

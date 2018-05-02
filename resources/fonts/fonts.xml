@@ -3,6 +3,6 @@
  -->
 
 <fonts>
-    <font id="ArrowFont" filename="Arrow.fnt" filter="CK:" />
+    <font id="ArrowFont" filename="Arrow.fnt" filter="CKOP:" />
     <font id="Heart" filename="Heart.fnt" filter="|:" />
 </fonts>
