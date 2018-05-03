@@ -65,9 +65,9 @@ class Fields {
             }
         }
 
-        System.println("Altitude: "+info.altitude);
-        System.println("Distance: "+info.elapsedDistance);
-        System.println("Speed: "+info.currentSpeed);
+//        System.println("Altitude: "+info.altitude);
+//        System.println("Distance: "+info.elapsedDistance);
+//        System.println("Speed: "+info.currentSpeed);
 
         time = fmtTime(Sys.getClockTime());
 
@@ -78,7 +78,7 @@ class Fields {
         rpm = info.currentCadence;
 //        rpm = 89;
         heartRate =  info.currentHeartRate;
-//        heartRate = 90;
+//        heartRate = 186;
         maxHeartRate = toStr(info.maxHeartRate);
         elapsedDistance  = printDst(info.elapsedDistance);
         elapsedLapDistance = printDst(calcLapDistance(info.elapsedDistance));

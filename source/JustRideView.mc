@@ -196,50 +196,24 @@ class JustRideView extends WatchUi.DataField {
         return x & 1;
     }
 
-    function getHeartValueRange(hr){
-        return (hr/179.0)*90;
+    function getHeartValueRange(hr,offset){
+        var hrRange= heartRateZones[5].toFloat()-heartRateZones[0].toFloat();
+        var hrNormalized = 0;
+        var barWidth = 78;
+
+        if ( hr != null){
+           if( hr >=  heartRateZones[0]){
+                hrNormalized = hr - heartRateZones[0]; //lower limit
+           } else if ( hr >= heartRateZones[5]  ){
+                hrNormalized = barWidth; //upper limit
+           }
+        }
+
+        return ((hrNormalized/hrRange)*barWidth)+offset;
     }
 
     function getCadenceValueRange(rpm){
         return (rpm/120.0)*80;
-    }
-
-    function doHrBackground(dc, hr) {
-        if (hr == null) {
-            return;
-        }
-
-        var color;
-        var zone;
-        var range = getHeartValueRange(hr);   //inserert value from array
-        if (hr >= heartRateZones[5]) {
-            zone = 6;
-            color = Graphics.COLOR_PURPLE;
-        } else if (hr > heartRateZones[4]) {
-            zone = 5;
-            color = Graphics.COLOR_DK_RED;
-        } else if (hr > heartRateZones[3]) {
-            zone = 4;
-            color = Graphics.COLOR_RED;
-        } else if (hr > heartRateZones[2]) {
-            zone = 3;
-            color = Graphics.COLOR_ORANGE;
-        } else if (hr > heartRateZones[1]) {
-            zone = 2;
-            color = Graphics.COLOR_YELLOW;
-        } else if (hr > heartRateZones[0]) {
-            zone = 1;
-            color = Graphics.COLOR_GREEN;
-        } else {
-            zone = 0;
-            color = Graphics.COLOR_LT_GRAY;
-        }
-
-        dc.setColor(color, Graphics.COLOR_TRANSPARENT);
-        dc.fillRectangle(18, LINE_C,  (range)-18, 15);
-        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
-//        textAlignRight(dc, dc.getWidth()/2-4, LINE_C+2, Graphics.FONT_XTINY,  "z"+zone);
-
     }
 
     function doCadenceBackground(dc, cadence) {
@@ -268,40 +242,78 @@ class JustRideView extends WatchUi.DataField {
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
     }
 
-    function showHeartRateZone(dc,hr){
-        var leftOffset = 15;
-        var rightOffset = 2;
-        var space = (((dc.getWidth()/2)-leftOffset-rightOffset)/5);
-        var zone =7;
-        if (hr != null){
+    function doHrBackground(dc, hr) {
+        if (hr == null) {
+            return;
+        }
+
+        var color;
+        var zone;
+        var range = getHeartValueRange(hr,3);
+        System.println("range:"+range);
         if (hr >= heartRateZones[5]) {
             zone = 6;
-        } else if (hr > heartRateZones[4]) {
+            color = Graphics.COLOR_PURPLE;
+        } else if (hr >= heartRateZones[4]) {
             zone = 5;
-        } else if (hr > heartRateZones[3]) {
+            color = Graphics.COLOR_RED;
+        } else if (hr >= heartRateZones[3]) {
             zone = 4;
-        } else if (hr > heartRateZones[2]) {
+            color = Graphics.COLOR_ORANGE;
+        } else if (hr >= heartRateZones[2]) {
             zone = 3;
-        } else if (hr > heartRateZones[1]) {
+            color = Graphics.COLOR_YELLOW;
+        } else if (hr >= heartRateZones[1]) {
             zone = 2;
-        } else if (hr > heartRateZones[0]) {
+            color = Graphics.COLOR_GREEN;
+        } else if (hr >= heartRateZones[0]) {
             zone = 1;
+            color = Graphics.COLOR_BLUE;
         } else {
             zone = 0;
+            color = Graphics.COLOR_LT_GRAY;
         }
+
+        dc.setColor(color, Graphics.COLOR_TRANSPARENT);
+        dc.fillRectangle(17, LINE_C,  range, 15);
+        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
+//        textAlignRight(dc, dc.getWidth()/2-4, LINE_C+2, Graphics.FONT_XTINY,  "z"+zone);
+
+    }
+
+    function showHeartRateZone(dc,hr){
+        var rightOffset = 2;
+        var zone =7;  //default out of zones range
+
+        if (hr != null){
+            if (hr >= heartRateZones[5]) {
+                zone = 6;  //should be impossibile to reach
+            } else if (hr >= heartRateZones[4]) {
+                zone = 5;  //upper zone
+            } else if (hr >= heartRateZones[3]) {
+                zone = 4;
+            } else if (hr >= heartRateZones[2]) {
+                zone = 3;
+            } else if (hr >= heartRateZones[1]) {
+                zone = 2;
+            } else if (hr >= heartRateZones[0]) {
+                zone = 1;
+            } else {
+                zone = 0;
+            }
         }
 
         for (var i = 0; i < heartRateZones.size(); i++) {
-            if (i > 0){
-                if (zone == i){
+            if (i > 0 && i < 6){ //skip zone 0 (not really important to show)
+                if (zone == i){  //selected zone - hilight
                     dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
-                } else {
+                } else { //show other zones - gray
                    dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
                 }
-//            textAlignRight(dc, ((i)*space)+leftOffset, LINE_C+2, Graphics.FONT_XTINY,  i);
-            textAlignRight(dc, getHeartValueRange(heartRateZones[i]), LINE_C+2, Graphics.FONT_XTINY,  i);
+
+            textAlignRight(dc, getHeartValueRange(heartRateZones[i-1],25), LINE_C+2, Graphics.FONT_XTINY,  i);
             }
-            dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_WHITE);
+            dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_WHITE);  //reset colors
         }
     }
 
