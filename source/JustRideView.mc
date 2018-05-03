@@ -37,6 +37,8 @@ class JustRideView extends WatchUi.DataField {
     const LINE_C = 172;
     const LINE_D = 244;
 
+    const VIEW_BC_TYPE = 1;   // 0 : Distance/Climb , 1 : LAP/
+
     hidden var fields;
     hidden var heartRateZones = [];
     hidden var newLap = false;
@@ -102,7 +104,9 @@ class JustRideView extends WatchUi.DataField {
     }
 
     function drawBoxes(dc){
-    /* BOX B */
+
+    if (VIEW_BC_TYPE == 0){
+            /* BOX B */
             //top Left
             textAlignLeft(dc, 5, LINE_A+2, Graphics.FONT_XTINY,  "Distance (km)");
             //middle
@@ -122,7 +126,28 @@ class JustRideView extends WatchUi.DataField {
             textAlignLeft(dc, dc.getWidth()-17,47 , Graphics.FONT_XTINY,  "Asc");
             textCentered(dc,  3*dc.getWidth()/4, LINE_A+60 , Graphics.FONT_SMALL, fields.altitude);
             textAlignLeft(dc, dc.getWidth()-17,LINE_A+56 , Graphics.FONT_XTINY,  "Alt");
+    } else {
+              /* BOX B */
+            //top Left
+            textAlignLeft(dc, 5, LINE_A+2, Graphics.FONT_XTINY,  "Lap");
+            //middle
+//            textCentered(dc, dc.getWidth()/4, LINE_A+35, Graphics.FONT_NUMBER_MILD, fields.elapsedLapDistance);
+            textCentered(dc, dc.getWidth()/4, LINE_A+35, Graphics.FONT_NUMBER_MILD,  "30.3");
+            textAlignLeft(dc, (dc.getWidth()/2)-17,47 , Graphics.FONT_XTINY,  "Dst");
+//            textCentered(dc,  dc.getWidth()/4, LINE_A+60 , Graphics.FONT_SMALL,  fields.elapsedDistance);
+            textCentered(dc,  dc.getWidth()/4, LINE_A+60 , Graphics.FONT_SMALL,  "12.5");
+            textAlignLeft(dc, (dc.getWidth()/2)-17,LINE_A+56 , Graphics.FONT_XTINY,  "Avg");
 
+            /* BOX C */
+            //top Left
+            textAlignRight(dc, dc.getWidth()-2, LINE_A+2, Graphics.FONT_XTINY,  "Climb (m)");
+    //        textAlignLeft(dc, 10+dc.getWidth()/2, LINE_A+25, Graphics.FONT_SMALL,  "12");
+//            textCentered(dc, 3*dc.getWidth()/4, LINE_A+35, Graphics.FONT_NUMBER_MILD,  fields.totalAscent);
+            textCentered(dc, 3*dc.getWidth()/4, LINE_A+35, Graphics.FONT_NUMBER_MILD,  "12.1");
+            textAlignLeft(dc, dc.getWidth()-17,47 , Graphics.FONT_XTINY,  "Asc");
+            textCentered(dc,  3*dc.getWidth()/4, LINE_A+60 , Graphics.FONT_SMALL, "00:25:22");
+            textAlignLeft(dc, dc.getWidth()-17,LINE_A+56 , Graphics.FONT_XTINY,  "Time");
+    }
 
             /* BOX D */
             textAlignLeft(dc, 8,LINE_B+23, Graphics.FONT_XTINY,  "Avg");
@@ -248,7 +273,7 @@ class JustRideView extends WatchUi.DataField {
         var color;
         var zone;
         var range = getHeartValueRange(hr,3);
-        System.println("range:"+range);
+//        System.println("range:"+range);
         if (hr >= heartRateZones[5]) {
             zone = 6;
             color = Graphics.COLOR_PURPLE;
