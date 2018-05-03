@@ -167,16 +167,14 @@ class JustRideView extends WatchUi.DataField {
     function showBlinkingHeart(dc,hr){
         var time = System.getClockTime();
         var s = time.sec;
+        dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_WHITE);
         if ((hr != null) && (hr > 0) && s != null){
             if (isOdd(s)){
                 dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_WHITE);
-            } else {
-                dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_WHITE);
             }
         }
         textAlignLeft(dc,3, LINE_C-8, HEART,  "|");
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_WHITE);
-
     }
 
 
