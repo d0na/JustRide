@@ -102,9 +102,9 @@ class JustRideView extends WatchUi.DataField {
     }
 
     function drawBoxes(dc){
-    /* BOX A */
+    /* BOX B */
             //top Left
-            textAlignLeft(dc, 5, LINE_A+2, Graphics.FONT_XTINY,  "Distance (m)");
+            textAlignLeft(dc, 5, LINE_A+2, Graphics.FONT_XTINY,  "Distance (km)");
             //middle
             textCentered(dc, dc.getWidth()/4, LINE_A+35, Graphics.FONT_NUMBER_MILD, fields.elapsedLapDistance);
     //        textCentered(dc, dc.getWidth()/4, LINE_A+35, Graphics.FONT_NUMBER_MILD,  "30.3");
@@ -113,7 +113,7 @@ class JustRideView extends WatchUi.DataField {
             textAlignLeft(dc, (dc.getWidth()/2)-17,LINE_A+56 , Graphics.FONT_XTINY,  "Tot");
 
 
-            /* BOX B */
+            /* BOX C */
             //top Left
             textAlignRight(dc, dc.getWidth()-2, LINE_A+2, Graphics.FONT_XTINY,  "Climb (m)");
     //        textAlignLeft(dc, 10+dc.getWidth()/2, LINE_A+25, Graphics.FONT_SMALL,  "12");
@@ -135,7 +135,7 @@ class JustRideView extends WatchUi.DataField {
 //            textRC(dc, dc.getWidth()-3, LINE_B+45, Graphics.FONT_NUMBER_MILD,  "18");
 
 
-            textAlignRight(dc, (dc.getWidth()/2)+10, LINE_B+64, Graphics.FONT_SMALL,  fields.vam);
+            textAlignRight(dc, (dc.getWidth()/2)+10, LINE_B+64, Graphics.FONT_SMALL,  fields.climbRate!=null?fields.climbRate.format("%01d"):"0");
             textAlignLeft(dc, (dc.getWidth()/2)+25, LINE_B+69, Graphics.FONT_XTINY,  "m/s");
             textAlignRight(dc, (dc.getWidth()/2)+23, LINE_B+62, ARROW_FONT,  "K");
 

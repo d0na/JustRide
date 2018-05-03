@@ -27,6 +27,8 @@ class ClimbRateField {
       return(prevRet);
     }
 
+    System.println("info.altitude"+info.altitude);
+    System.println("info.elapsedTime:"+info.elapsedTime);
     if ((info.altitude==null)||(info.elapsedTime==null)){ // data not available (weird)
       return(prevRet);
     }
@@ -74,6 +76,8 @@ class ClimbRateField {
     if (metric){
       prevRet=prevRet*.00508; // convert ft/min to meters/sec
     }
+
+    System.println(prevRet);
     return(prevRet);
   }
 }

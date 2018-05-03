@@ -91,8 +91,8 @@ class Fields {
 
 //        vam = rate(info).format("%0d");
 
-        vam = print0D(climbRateHelper.rate(info));
-        climbRate = vam;
+//        vam = print0D(climbRateHelper.rate(info));
+        climbRate = climbRateHelper.rate(info);
         climbAvgGrade = climbAvgRateHelper.avgGrade(info);
     }
 
