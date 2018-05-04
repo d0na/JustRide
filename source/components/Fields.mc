@@ -13,13 +13,6 @@ class Fields {
     hidden var climbRateHelper;
     hidden var climbAvgRateHelper;
 
-
-//    hidden var rate20s;
-//    hidden var rate30s;
-//    hidden var rate40s;
-//
-//    hidden var m_prev;
-
     // public fields - usable after the user calls compute
     var elapsedLapDistance = 0;
     var elapsedDistance;
@@ -41,18 +34,14 @@ class Fields {
     var altitude;
     var lap = 0;
 
-
-
+    /* CONSTRUCTOR */
     function initialize() {
-//        rate20s = new ClimbRate(20);
-//        rate30s = new ClimbRate(30);
-//        rate40s = new ClimbRate(40);
-
         lsGradeHelper = new LSGrade();
         climbRateHelper = new ClimbRateField();
         climbAvgRateHelper = new ClimbAvgGrade();
     }
 
+    /* COMPUTE */
     function compute(info) {
 
         var elapsed = info.elapsedTime;
@@ -65,33 +54,23 @@ class Fields {
             }
         }
 
-//        System.println("Altitude: "+info.altitude);
-//        System.println("Distance: "+info.elapsedDistance);
-//        System.println("Speed: "+info.currentSpeed);
-
         time = fmtTime(Sys.getClockTime());
 
         elapsedTime = fmtSecs(info.timerTime);
-        speed = getSpeed(info.currentSpeed);
-        avgSpeed = getSpeed(info.averageSpeed);
-        totalAscent = printAltitude(info.totalAscent);
+        speed = fmtSpeed(info.currentSpeed);
+        avgSpeed = fmtSpeed(info.averageSpeed);
+        totalAscent = fmtAltitude(info.totalAscent);
+        altitude = fmtAltitude(info.altitude);
         rpm = info.currentCadence;
 //        rpm = 89;
         heartRate =  info.currentHeartRate;
 //        heartRate = 186;
         maxHeartRate = toStr(info.maxHeartRate);
-        elapsedDistance  = printDst(info.elapsedDistance);
-        elapsedLapDistance = printDst(calcLapDistance(info.elapsedDistance));
+        elapsedDistance  = fmtDistance(info.elapsedDistance);
+        elapsedLapDistance = fmtDistance(calcLapDistance(info.elapsedDistance));
 
-        altitude = print0D(info.altitude);
-//        climbGrade = grade(info);
         climbGrade = lsGradeHelper.gradient(info);
-//        vam = VamRate(info).format("%0d");
 
-
-//        vam = rate(info).format("%0d");
-
-//        vam = print0D(climbRateHelper.rate(info));
         climbRate = climbRateHelper.rate(info);
         climbAvgGrade = climbAvgRateHelper.avgGrade(info);
     }
@@ -104,6 +83,43 @@ class Fields {
         }
     }
 
+
+    
+    /*******************
+
+        Fields Computational functions
+
+    *********************/
+
+
+    function VamRate(info){
+        if (info.altitude == null) {
+            return "--";
+        }
+
+        if (m_prev == null) {
+            m_prev = info.altitude;
+        }
+
+        // calculate the delta since the previous call
+        var delta = info.altitude - m_prev;
+        m_prev = info.altitude;
+
+        // this is the expensive part, adding the sample and creating
+        // the sums of all of the values
+        rate20s.add_sample(delta);
+        rate30s.add_sample(delta);
+        rate40s.add_sample(delta);
+
+        var ascent20s = rate20s.ascent() * 180;
+        var ascent30s = rate30s.ascent() * 120;
+        var ascent40s = rate40s.ascent() * 90;
+
+        // average of the delta values
+        return (ascent20s + ascent30s + ascent40s) / 3.0;
+    }
+
+
     function calcLapDistance (dst){
         if (dst == null || lastElapsedDistance== null){
             return null;
@@ -111,73 +127,21 @@ class Fields {
         return dst - lastElapsedDistance;
     }
 
+    /*******************
 
+        Printer helper
 
-
-    function printDst(dst){
-        var dist;
-        if (dst == null) {
-            return "__._";
-        }
-
-        if (Sys.getDeviceSettings().distanceUnits == Sys.UNIT_METRIC) {
-            dist = dst / 1000.0;
-        } else {
-            dist = dst / 1609.0;
-        }
-        return dist.format("%.1f");
-    }
-
-    function printAltitude(alt){
-        if (alt == null) {
-            return "___";
-        }
-        return (alt).format("%01d");
-    }
-
-    function print0D(val){
-        if (val == null || val == 0.0) {
-            return "0";
-        }
-        return (val).format("%01d");
-    }
-
-    function getSpeed(speed){
-        if (speed == null || speed == 0) {
-                return "0.0";
-        }
-
-        var settings = Sys.getDeviceSettings();
-        var unit = 2.2; // miles
-        if (settings.paceUnits == Sys.UNIT_METRIC) {
-            unit = 3.6; // km
-        }
-        return (unit * speed).format("%.1f");
-    }
-
+    *********************/
 
     function toStr(o) {
-            if (o != null) {
-                return "" + o;
-            } else {
-                return "--";
-            }
+        if (o != null) {
+            return "" + o;
+        } else {
+            return "--";
         }
-
-    function fmtTime(clock) {
-        var h = clock.hour;
-        if (!Sys.getDeviceSettings().is24Hour) {
-            if (h > 12) {
-                h -= 12;
-            } else if (h == 0) {
-                h += 12;
-            }
-        }
-        return "" + h + ":" + clock.min.format("%02d");
     }
 
     function fmtSecs(time) {
-
         if (time == null) {
             return "--:--";
         }
@@ -191,32 +155,57 @@ class Fields {
 
         return fmt;
     }
-
-        function VamRate(info){
-                if (info.altitude == null) {
-                    return "--";
-                }
-
-                if (m_prev == null) {
-                    m_prev = info.altitude;
-                }
-
-                // calculate the delta since the previous call
-                var delta = info.altitude - m_prev;
-                m_prev = info.altitude;
-
-                // this is the expensive part, adding the sample and creating
-                // the sums of all of the values
-                rate20s.add_sample(delta);
-                rate30s.add_sample(delta);
-                rate40s.add_sample(delta);
-
-                var ascent20s = rate20s.ascent() * 180;
-                var ascent30s = rate30s.ascent() * 120;
-                var ascent40s = rate40s.ascent() * 90;
-
-                // average of the delta values
-                return (ascent20s + ascent30s + ascent40s) / 3.0;
+    
+    function fmtTime(clock) {
+        var h = clock.hour;
+        if (!Sys.getDeviceSettings().is24Hour) {
+            if (h > 12) {
+                h -= 12;
+            } else if (h == 0) {
+                h += 12;
+            }
+        }
+        return "" + h + ":" + clock.min.format("%02d");
+    }
+    
+    function fmtSpeed(speed){
+        if (speed == null || speed == 0) {
+                return "0.0";
         }
 
+        var settings = Sys.getDeviceSettings();
+        var unit = 2.2; // miles
+        if (settings.paceUnits == Sys.UNIT_METRIC) {
+            unit = 3.6; // km
+        }
+        return (unit * speed).format("%.1f");
+    }
+    
+    function fmtDistance(dst){
+        var dist;
+        if (dst == null) {
+            return "__._";
+        }
+
+        if (Sys.getDeviceSettings().distanceUnits == Sys.UNIT_METRIC) {
+            dist = dst / 1000.0;
+        } else {
+            dist = dst / 1609.0;
+        }
+        return dist.format("%.1f");
+    }
+
+    function fmtAltitude(alt){
+        if (alt == null) {
+            return "___";
+        }
+        return (alt).format("%01d");
+    }
+
+    function print0D(val){
+        if (val == null || val == 0.0) {
+            return "0";
+        }
+        return (val).format("%01d");
+    }
 }
