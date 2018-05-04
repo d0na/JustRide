@@ -21,24 +21,18 @@ class ClimbRateField {
   }
 
   // compute current climbing rate
-  function rate(info) {
+  function rate(altitude,elapsedTime) {
 
-    if (info==null){ // does this ever happen???
+    if ((altitude==null)||(elapsedTime==null)){ // data not available (weird)
       return(prevRet);
     }
 
-    System.println("info.altitude"+info.altitude);
-    System.println("info.elapsedTime:"+info.elapsedTime);
-    if ((info.altitude==null)||(info.elapsedTime==null)){ // data not available (weird)
+    if (elapsedTime == prevTime){ // don't save this sample
       return(prevRet);
     }
 
-    if (info.elapsedTime == prevTime){ // don't save this sample
-      return(prevRet);
-    }
-
-    var thisAlt=info.altitude*3.28084;     // altitude in feet
-    var thisTime=info.elapsedTime/60000.0; // time in minutes
+    var thisAlt=altitude*3.28084;     // altitude in feet
+    var thisTime=elapsedTime/60000.0; // time in minutes
     //System.println(thisTime);
     //System.println(thisAlt);
 
@@ -77,7 +71,7 @@ class ClimbRateField {
       prevRet=prevRet*.00508; // convert ft/min to meters/sec
     }
 
-    System.println(prevRet);
+//    System.println(prevRet);
     return(prevRet);
   }
 }

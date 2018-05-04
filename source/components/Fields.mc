@@ -9,7 +9,7 @@ class Fields {
     hidden var newLap = false;
     hidden var curDistance = 0;
     hidden var curElevation = 0;
-    hidden var lsGradeHelper;
+    hidden var climbGradeHelper;
     hidden var climbRateHelper;
     hidden var climbAvgRateHelper;
 
@@ -36,7 +36,7 @@ class Fields {
 
     /* CONSTRUCTOR */
     function initialize() {
-        lsGradeHelper = new LSGrade();
+        climbGradeHelper = new LSGrade();
         climbRateHelper = new ClimbRateField();
         climbAvgRateHelper = new ClimbAvgGrade();
     }
@@ -69,9 +69,13 @@ class Fields {
         elapsedDistance  = fmtDistance(info.elapsedDistance);
         elapsedLapDistance = fmtDistance(calcLapDistance(info.elapsedDistance));
 
-        climbGrade = lsGradeHelper.gradient(info);
+        //Climb info
+        climbGrade = climbGradeHelper.gradient(info.altitude,info.elapsedDistance);
+        climbRate = climbRateHelper.rate(info.altitude,info.elapsedTime);
 
-        climbRate = climbRateHelper.rate(info);
+        System.println("climbGrade"+climbGrade);
+        System.println("climbRate"+climbRate);
+        Sys.println(Toybox.Activity.getActivityInfo().altitude);
         climbAvgGrade = climbAvgRateHelper.avgGrade(info);
     }
 

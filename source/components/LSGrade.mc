@@ -18,23 +18,20 @@ class LSGrade{
     }
 
     // compute LS gradient
-    function gradient(info) {
+    function gradient(altitude,elapsedDistance) {
 
-        if (info==null){ // does this ever happen???
+
+        if ((altitude==null)||(elapsedDistance==null)){ // data not available (weird)
           return(prevRet);
         }
 
-        if ((info.altitude==null)||(info.elapsedDistance==null)){ // data not available (weird)
-          return(prevRet);
-        }
-
-        if (info.elapsedDistance==prevDist){
+        if (elapsedDistance==prevDist){
           return(prevRet); // skip out quickly!
         }
 
         // we've moved!
-        saveAlt[nextLoc]=info.altitude;
-        saveDist[nextLoc]=info.elapsedDistance;
+        saveAlt[nextLoc]=altitude;
+        saveDist[nextLoc]=elapsedDistance;
         ++nextLoc;
         if (nextLoc==10){
           nextLoc=0; // circular queue

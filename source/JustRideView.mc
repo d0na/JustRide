@@ -131,7 +131,7 @@ class JustRideView extends WatchUi.DataField {
             textLC(dc, 6, LINE_B+45, Graphics.FONT_SMALL,  fields.avgSpeed);
             textCentered(dc, dc.getWidth()/2, LINE_B+45, Graphics.FONT_NUMBER_THAI_HOT, fields.speed);
     //        textRC(dc, dc.getWidth()-3, LINE_B+45, Graphics.FONT_SMALL,  "1000");
-            textRC(dc, dc.getWidth()-3, LINE_B+45, Graphics.FONT_NUMBER_MILD,  fields.climbGrade.format("%01d"));
+            textRC(dc, dc.getWidth()-3, LINE_B+45, Graphics.FONT_NUMBER_MILD,  fields.climbGrade!=null?fields.climbGrade.format("%01d"):"0");
 //            textRC(dc, dc.getWidth()-3, LINE_B+45, Graphics.FONT_NUMBER_MILD,  "18");
 
 
@@ -248,7 +248,7 @@ class JustRideView extends WatchUi.DataField {
         var color;
         var zone;
         var range = getHeartValueRange(hr,3);
-        System.println("range:"+range);
+//        System.println("range:"+range);
         if (hr >= heartRateZones[5]) {
             zone = 6;
             color = Graphics.COLOR_PURPLE;
