@@ -417,11 +417,9 @@ class JustRideView extends WatchUi.DataField {
 
     function getLapString(dc){
         var dataColor = lapInfo.getStateTimerColor();
-        //! Construct the lap string.
         dc.setColor(dataColor, Gfx.COLOR_WHITE);
-        //! Construct the lap string.
         var lapString =lapInfo.getLapString();
-//            //! Draw the lap number
+        //! Draw the lap number
         dc.drawText((dc.getWidth()/2)-12,65, Gfx.FONT_XTINY, lapString, (Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER));
         dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_WHITE);
     }

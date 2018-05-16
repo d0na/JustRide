@@ -6,43 +6,41 @@ using Toybox.System as Sys;
 class Fields {
 
     hidden var lastElapsedDistance = 0 ;
-    hidden var newLap = false;
     hidden var curDistance = 0;
     hidden var curElevation = 0;
-    hidden var climbGradeHelper;
-    hidden var climbRateHelper;
-    hidden var climbAvgRateHelper;
+    hidden var climbInfo;
 
     // public fields - usable after the user calls compute
-    var elapsedLapDistance = 0;
-    var elapsedDistance;
-    var elapsedTime;
-
-    var lapDistance;
-    var rpm;
-    var maxRpm;
-    var avgSpeed;
-    var vam;
-    var totalAscent;
     var heartRate;
     var maxHeartRate;
-    var climbGrade;
-    var climbRate;
-    var climbAvgGrade;
-    var speed;
-    var time;
+    var elapsedDistance;
+    var elapsedTime;
+    var totalAscent;
     var altitude;
-    var lap = 0;
+    var speed;
+    var avgSpeed;
+    var climbRate;
+    var climbGrade;
+    var rpm;
+    var barometricAltitude;
+
+    var time;
+    var pressure;
+    var seaPressure;
+    var barometricRawAltitude;
+    var rawAmbientPressure;
+
 
     /* CONSTRUCTOR */
     function initialize() {
-        climbGradeHelper = new LSGrade();
-        climbRateHelper = new ClimbRateField();
-        climbAvgRateHelper = new ClimbAvgGrade();
+        climbInfo = new ClimbInfo();
     }
 
     /* COMPUTE */
     function compute(info) {
+
+        climbInfo.compute(info.altitude,info.elapsedDistance,info.elapsedTime);
+
 
         var elapsed = info.elapsedTime;
         var elapsedSecs = null;
@@ -54,6 +52,9 @@ class Fields {
             }
         }
 
+        seaPressure = info.meanSeaLevelPressure;
+        rawAmbientPressure = info.rawAmbientPressure;
+        pressure = info.ambientPressure;
         time = fmtTime(Sys.getClockTime());
 
         elapsedTime = fmtSecs(info.timerTime);
@@ -61,75 +62,43 @@ class Fields {
         avgSpeed = fmtSpeed(info.averageSpeed);
         totalAscent = fmtAltitude(info.totalAscent);
         altitude = fmtAltitude(info.altitude);
+        barometricAltitude = getBarometricAltitude(info.ambientPressure);
+        barometricRawAltitude = getBarometricAltitude(info.rawAmbientPressure);
+
+
         rpm = info.currentCadence;
 //        rpm = 89;
         heartRate =  info.currentHeartRate;
 //        heartRate = 186;
         maxHeartRate = toStr(info.maxHeartRate);
+
         elapsedDistance  = fmtDistance(info.elapsedDistance);
-        elapsedLapDistance = fmtDistance(calcLapDistance(info.elapsedDistance));
 
         //Climb info
-        climbGrade = climbGradeHelper.gradient(info.altitude,info.elapsedDistance);
-        climbRate = climbRateHelper.rate(info.altitude,info.elapsedTime);
-
-        System.println("climbGrade"+climbGrade);
-        System.println("climbRate"+climbRate);
-        Sys.println(Toybox.Activity.getActivityInfo().altitude);
-        climbAvgGrade = climbAvgRateHelper.avgGrade(info);
+        climbGrade = climbInfo.grade;
+        climbRate = climbInfo.vam;
     }
 
-
-    function setNewLap(bol){
-        if (bol){
-            lap +=1;
-            newLap = true;
-        }
-    }
-
-
-    
     /*******************
 
         Fields Computational functions
 
     *********************/
 
-
-    function VamRate(info){
-        if (info.altitude == null) {
-            return "--";
+    const sea_press = 1013.25;
+	function getBarometricAltitude(pressure){
+        // Formula - Simpified Barometric Altitude
+	    //  h = 44330 * (1-(pow((pressure/sea_pressure),(1/5.255)))
+	    var pow = 0.0d;
+	    if( pressure != null && pressure > 0){
+            var hPaPressure = (pressure/100);
+            pow = Math.pow(hPaPressure/sea_press,(1/5.255));
+            return 44330 * (1-pow);
+        } else {
+            return 0.0;
         }
+	}
 
-        if (m_prev == null) {
-            m_prev = info.altitude;
-        }
-
-        // calculate the delta since the previous call
-        var delta = info.altitude - m_prev;
-        m_prev = info.altitude;
-
-        // this is the expensive part, adding the sample and creating
-        // the sums of all of the values
-        rate20s.add_sample(delta);
-        rate30s.add_sample(delta);
-        rate40s.add_sample(delta);
-
-        var ascent20s = rate20s.ascent() * 180;
-        var ascent30s = rate30s.ascent() * 120;
-        var ascent40s = rate40s.ascent() * 90;
-
-        // average of the delta values
-        return (ascent20s + ascent30s + ascent40s) / 3.0;
-    }
-
-
-    function calcLapDistance (dst){
-        if (dst == null || lastElapsedDistance== null){
-            return null;
-        }
-        return dst - lastElapsedDistance;
-    }
 
     /*******************
 
