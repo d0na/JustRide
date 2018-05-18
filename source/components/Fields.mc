@@ -19,7 +19,8 @@ class Fields {
     var altitude;
     var speed;
     var avgSpeed;
-    var climbRate;
+    var climbRate10sec;
+    var climbRate30sec;
     var climbLsGrade;
     var climbPercGrade;
     var rpm;
@@ -80,7 +81,8 @@ class Fields {
         //Climb info
         climbLsGrade = climbInfo.lsGrade;
         climbPercGrade = climbInfo.percGrade;
-        climbRate = climbInfo.vam;
+        climbRate10sec = fmtVam(climbInfo.vam10sec);
+        climbRate30sec = fmtVam(climbInfo.vam30sec);
     }
 
     /*******************
@@ -184,5 +186,13 @@ class Fields {
             return "0";
         }
         return (val).format("%01d");
+    }
+
+    function fmtVam(val){
+        if (val > 300 ){
+            return val;
+        } else {
+            return 0;
+        }
     }
 }

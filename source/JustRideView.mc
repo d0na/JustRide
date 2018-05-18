@@ -191,13 +191,14 @@ class JustRideView extends WatchUi.DataField {
         textLC(dc, 6, LINE_B+45, Gfx.FONT_SMALL,  fields.avgSpeed);
         textC(dc, dc.getWidth()/2, LINE_B+45, Gfx.FONT_NUMBER_THAI_HOT, fields.speed);
 //        textRC(dc, dc.getWidth()-3, LINE_B+45, Gfx.FONT_SMALL,  "1000");
-        textRC(dc, dc.getWidth()-3, LINE_B+45, Gfx.FONT_NUMBER_MILD,  fields.climbLsGrade!=null?fields.climbLsGrade.format("%01d"):"0");
-            textRC(dc, dc.getWidth()-3, LINE_B+70, Gfx.FONT_NUMBER_MILD,  fields.climbPercGrade!=null?fields.climbPercGrade.format("%01d"):"0");
+        textRC(dc, dc.getWidth()-3, LINE_B+48, Gfx.FONT_SMALL,  fields.climbPercGrade!=null?fields.climbPercGrade.format("%.1f"):"0");
+        textRC(dc, dc.getWidth()-14, LINE_B+45, Gfx.FONT_NUMBER_MILD,  fields.climbPercGrade!=null?fields.climbPercGrade.format("%01d"):"0");
+        textRC(dc, dc.getWidth()-3, LINE_B+70, Gfx.FONT_NUMBER_MILD,  fields.climbLsGrade!=null?fields.climbLsGrade.format("%01d"):"0");
 //            textRC(dc, dc.getWidth()-3, LINE_B+45, Gfx.FONT_NUMBER_MILD,  "18");
 
 
-        textAR(dc, (dc.getWidth()/2)+10, LINE_B+64, Gfx.FONT_SMALL,  fields.climbRate.format("%.1f"));
-//            textAL(dc, 30, LINE_B+64, Gfx.FONT_SMALL,  fields.climbAltRate.format("%.1f"));
+        textAR(dc, (dc.getWidth()/2)+10, LINE_B+64, Gfx.FONT_SMALL,  fields.climbRate10sec.format("%.1f"));
+        textAL(dc, 30, LINE_B+64, Gfx.FONT_SMALL,  fields.climbRate30sec.format("%.1f"));
         textAL(dc, (dc.getWidth()/2)+25, LINE_B+69, Gfx.FONT_XTINY,  "m/h");
         textAR(dc, (dc.getWidth()/2)+23, LINE_B+62, ARROW_FONT,  "K");
     }

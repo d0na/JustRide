@@ -3,30 +3,44 @@ https://github.com/nickmacias/Garmin-LSGrade/blob/master/LSGradeView.mc
  */
 class ClimbInfo{
 
-    const SAMPLES_SIZE = 10; //10 samples equals a 10 seconds interval time
-    hidden var saveAlt=new[SAMPLES_SIZE]; // record 10 prior altitude readings here
-    hidden var saveDist=new[SAMPLES_SIZE]; // and 10 distance readings
-    hidden var saveTime=new[SAMPLES_SIZE]; // and 10 time readings
-    hidden var saveCR=new[10]; // record 10 prior climbing rates
-    hidden var nextLoc=0; // where we'll write the *next* pieces of data
-    hidden var prevLoc=0; // where we'll write the *next* pieces of data
+    const SAMPLES_10_SEC = 10; //10 samples equals a 10 seconds interval time
+    const SAMPLES_5_SEC = 5; //10 samples equals a 10 seconds interval time
+    const SAMPLES_30_SEC = 30; //10 samples equals a 10 seconds interval time
+
+    hidden var saveAlt10sec=new[SAMPLES_10_SEC]; // record 10 prior altitude readings here
+    hidden var saveAlt30sec=new[SAMPLES_30_SEC]; // record 30 prior altitude readings here
+
+    hidden var saveDist10sec=new[SAMPLES_10_SEC]; // and 10 distance readings
+    hidden var saveDist30sec=new[SAMPLES_30_SEC]; // and 10 distance readings
+
+    hidden var saveCR=new[SAMPLES_10_SEC]; // record 10 prior climbing rates
+    
+    hidden var nextLoc10s=0; // where we'll write the *next* pieces of data
+    hidden var prevLoc10s=0; // where we'll write the *next* pieces of data
+
+    hidden var nextLoc30s=0; // where we'll write the *next* pieces of data
+    hidden var prevLoc30s=0; // where we'll write the *next* pieces of data
 
     hidden var prevRet=0.0; // previous return value (in case we can't re-compute this time)
     hidden var prevDist=0.0; // previous distance. "interesting" data means distance has changed
 
-    hidden var ready=false; // set when we've got full arrays
+    hidden var ready10sec=false; // set when we've got full arrays
+    hidden var ready30sec=false; // set when we've got full arrays
 
+    //public fields
     var lsGrade =0.0;
     var percGrade =0.0;
-    var vam =0.0;
-
+    var vam10sec =0.0;
+    var vam30sec =0.0;
 
     function initialize() {
-        ready=false;
-        nextLoc=0;
+        ready10sec=false;
+        ready30sec=false;
+        nextLoc10s=0;
+        nextLoc30s=0;
         // initialize saveCR array
         var i;
-        for (i=0;i<10;i++){
+        for (i=0;i<SAMPLES_10_SEC;i++){
             saveCR[i]=10000.0; // 10000 means uninitialized
         }
     }
@@ -48,25 +62,27 @@ class ClimbInfo{
             }
     }
 
-    function pushValues(altitude,elapsedDistance,elapsedTime){
-        // we've moved!
-        saveAlt[nextLoc]=altitude;
-        saveDist[nextLoc]=elapsedDistance;
-        saveTime[nextLoc]=elapsedTime;
-        var alt = altitude-saveAlt[prevLoc];
-        prevLoc = nextLoc;
+    function pushValues(altitude,elapsedDistance){
 
-        var time = saveTime[prevLoc]-saveTime[nextLoc];
+        if (altitude != null && elapsedDistance != null){
+            // we've moved!
+            saveAlt10sec[nextLoc10s]=altitude;
+            saveDist10sec[nextLoc10s]=elapsedDistance;
 
+            saveAlt30sec[nextLoc30s]=altitude;
+            saveDist30sec[nextLoc30s]=elapsedDistance;
 
-//        System.println("alt "+alt);
+            //Formula
+            //vam10sec =  ascent * 3600  / time, time is 1 sec
+            // populating Climb Rate array per sec
+            saveCR[nextLoc10s] = (altitude-saveAlt10sec[prevLoc10s]) * 3600;
 
-        saveCR[nextLoc] = (alt * 3600);
-
-        ++nextLoc;
-        if (nextLoc==SAMPLES_SIZE){
-          nextLoc=0; // circular queue
-          ready=true; // arrays are fully populated
+            prevLoc10s = nextLoc10s;
+            prevLoc30s = nextLoc30s;
+//            System.println("prevLoc" + prevLoc10s);
+            incLoc10s();
+            incLoc30s();
+//            System.println("nextLoc " + nextLoc10s);
         }
     }
 
@@ -77,20 +93,20 @@ class ClimbInfo{
         var xSum=0.0,ySum=0.0,xMean,yMean;
         var i;
 
-        for (i=0;i<SAMPLES_SIZE;i++){
-          xSum+=saveDist[i];
-          ySum+=saveAlt[i];
+        for (i=0;i<SAMPLES_10_SEC;i++){
+          xSum+=saveDist10sec[i];
+          ySum+=saveAlt10sec[i];
         }
 
-        xMean=xSum/SAMPLES_SIZE;
-        yMean=ySum/SAMPLES_SIZE;
+        xMean=xSum/SAMPLES_10_SEC;
+        yMean=ySum/SAMPLES_10_SEC;
 
         // slope=sum[(xi-xMean)(yi-yMean)] / sum[(xi-xMean)^2]
         var top=0.0,bot=0.0;
 
-        for (i=0;i<SAMPLES_SIZE;i++){
-          top+=(saveDist[i]-xMean)*(saveAlt[i]-yMean);
-          bot+=(saveDist[i]-xMean)*(saveDist[i]-xMean);
+        for (i=0;i<SAMPLES_10_SEC;i++){
+          top+=(saveDist10sec[i]-xMean)*(saveAlt10sec[i]-yMean);
+          bot+=(saveDist10sec[i]-xMean)*(saveDist10sec[i]-xMean);
         }
         if (bot==0){
           return(prevRet);
@@ -111,74 +127,41 @@ class ClimbInfo{
 
 
     function calcSlopePercentage(){
-
-        if ((saveAlt[prevLoc] != null) && (saveAlt[nextLoc] != null) && (saveDist[prevLoc] != null) && (saveDist[nextLoc] != null)){
-            return (saveAlt[prevLoc]-saveAlt[nextLoc])/(saveDist[prevLoc]-saveDist[nextLoc])*100;
-        } else {
-            return 0;
+        if (
+            (saveAlt10sec[prevLoc10s] != null) &&
+            (saveAlt10sec[nextLoc10s] != null) &&
+            (saveDist10sec[prevLoc10s] != null) &&
+            (saveDist10sec[nextLoc10s] != null)
+           )
+        {
+            return (saveAlt10sec[prevLoc10s]-saveAlt10sec[nextLoc10s])/(saveDist10sec[prevLoc10s]-saveDist10sec[nextLoc10s])*100;
         }
-
-
     }
 
-
-    function climbRate(){
-
-
-//        System.println("indx:"+prevLoc);
-//        System.println("mod:"+nextLoc);
-        var time = saveTime[prevLoc]-saveTime[nextLoc];
-        var alt = saveAlt[prevLoc]-saveAlt[nextLoc];
-        var dist = saveDist[prevLoc]-saveDist[nextLoc];
-
-
-//        System.println("--------------------");
-//        System.println("Altezze:"+saveAlt);
-//        System.println("Distanze:"+saveDist);
-//        System.println(" ** Calculed ** " );
-//        System.println("prevLoc:"+prevLoc);
-//        System.println("nextLoc:"+nextLoc);
-//        System.println("ALT pre:"+saveAlt[prevLoc]);
-//        System.println("ALT curr:"+saveAlt[nextLoc]);
-
-//        System.println("Time(ms):"+time);
-//        System.println("Time(h):"+time/1000);
-//        System.println("Dist:"+dist);
-
-//        var result = alt/(time/1000) * 3600;
-
-        //Formula
-        //vam =  ascent * 3600  / time
-
-//        saveCR[prevLoc]= (alt * 3600)/10;
-
-//        System.println("Dislivello 10s:"+alt);
-//        System.println("VAM 10s "+saveCR);
+    //Calculate climb rate whitin 10 sec
+    function climbRate10sec(){
 
         // now average our saved CRs
         var CRSum=0.0;
-        var CRNum=0;
         var CRAvg;
         var i;
 
-//        System.println("VAM 10s "+saveCR);
-
-        for (i=0;i<10;i++){
+        for (i=0;i<SAMPLES_10_SEC;i++){
           if (saveCR[i] != 100000.0){
-            ++CRNum;
             CRSum+=saveCR[i];
           }
-        } // ready to calculate average
-        CRAvg=CRSum/CRNum; // should be legal
-//        prevRet=CRAvg;
+        } // ready to calculate average of each climb rate in the last 10 sec
+        CRAvg=CRSum/SAMPLES_10_SEC; // should be legal
 
+        return CRAvg;
+    }
 
-        if (CRAvg > 300 ){
-            return CRAvg;
-        } else {
-            return 0;
-        }
-
+    //Calculate climb rate whitin 10 sec
+    function climbRate30sec(){
+        var ascent = saveAlt30sec[prevLoc30s]-saveAlt30sec[nextLoc30s];
+        var vam = (ascent * 3600)/30;
+//        System.println("ascent:"+ascent);
+        return vam;
     }
 
     // compute LS gradient
@@ -188,14 +171,39 @@ class ClimbInfo{
           return(prevRet);
         }
 
-        pushValues(altitude,elapsedDistance,elapsedTime);
+        pushValues(altitude,elapsedDistance);
 
-        if (ready){
+        if (ready10sec){
           lsGrade = calcLSFit();
-          vam  = climbRate();
           percGrade = calcSlopePercentage();
-//          System.println("Vam:"+vam);
-//          System.println("%grd:"+percGrade);
+          vam10sec  = climbRate10sec();
+        }
+
+        if (ready30sec){
+          vam30sec  = climbRate30sec();
         }
      }
+
+    //Mod function
+    function mod(x,y){
+        return x%y;
+    }
+
+    //Increment index 10sec
+    function incLoc10s(){
+        ++nextLoc10s;
+        nextLoc10s = mod(nextLoc10s,SAMPLES_10_SEC);
+        if (nextLoc10s==0){
+            ready10sec=true; // arrays are fully populated
+        }
+    }
+
+    //Increment index 30sec
+    function incLoc30s(){
+        ++nextLoc30s;
+        nextLoc30s = mod(nextLoc30s,SAMPLES_30_SEC);
+        if (nextLoc30s == 0){
+            ready30sec=true; // arrays are fully populated
+        }
+    }
 }
