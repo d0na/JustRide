@@ -16,7 +16,8 @@ class ClimbInfo{
 
     hidden var ready=false; // set when we've got full arrays
 
-    var grade =0.0;
+    var lsGrade =0.0;
+    var percGrade =0.0;
     var vam =0.0;
 
 
@@ -52,11 +53,15 @@ class ClimbInfo{
         saveAlt[nextLoc]=altitude;
         saveDist[nextLoc]=elapsedDistance;
         saveTime[nextLoc]=elapsedTime;
+        var alt = altitude-saveAlt[prevLoc];
         prevLoc = nextLoc;
 
         var time = saveTime[prevLoc]-saveTime[nextLoc];
-        var alt = saveAlt[prevLoc]-saveAlt[nextLoc];
 
+
+//        System.println("alt "+alt);
+
+        saveCR[nextLoc] = (alt * 3600);
 
         ++nextLoc;
         if (nextLoc==SAMPLES_SIZE){
@@ -104,6 +109,19 @@ class ClimbInfo{
     }
 
 
+
+    function calcSlopePercentage(){
+
+        if ((saveAlt[prevLoc] != null) && (saveAlt[nextLoc] != null) && (saveDist[prevLoc] != null) && (saveDist[nextLoc] != null)){
+            return (saveAlt[prevLoc]-saveAlt[nextLoc])/(saveDist[prevLoc]-saveDist[nextLoc])*100;
+        } else {
+            return 0;
+        }
+
+
+    }
+
+
     function climbRate(){
 
 
@@ -114,21 +132,36 @@ class ClimbInfo{
         var dist = saveDist[prevLoc]-saveDist[nextLoc];
 
 
-        System.println("ALT:"+alt);
-        System.println("pre:"+saveAlt[prevLoc]);
-        System.println("curr:"+saveAlt[nextLoc]);
+//        System.println("--------------------");
+//        System.println("Altezze:"+saveAlt);
+//        System.println("Distanze:"+saveDist);
+//        System.println(" ** Calculed ** " );
+//        System.println("prevLoc:"+prevLoc);
+//        System.println("nextLoc:"+nextLoc);
+//        System.println("ALT pre:"+saveAlt[prevLoc]);
+//        System.println("ALT curr:"+saveAlt[nextLoc]);
+
 //        System.println("Time(ms):"+time);
 //        System.println("Time(h):"+time/1000);
 //        System.println("Dist:"+dist);
 
 //        var result = alt/(time/1000) * 3600;
-        saveCR[prevLoc]= alt/(time/1000) * 3600;
+
+        //Formula
+        //vam =  ascent * 3600  / time
+
+//        saveCR[prevLoc]= (alt * 3600)/10;
+
+//        System.println("Dislivello 10s:"+alt);
+//        System.println("VAM 10s "+saveCR);
 
         // now average our saved CRs
         var CRSum=0.0;
         var CRNum=0;
         var CRAvg;
         var i;
+
+//        System.println("VAM 10s "+saveCR);
 
         for (i=0;i<10;i++){
           if (saveCR[i] != 100000.0){
@@ -139,7 +172,12 @@ class ClimbInfo{
         CRAvg=CRSum/CRNum; // should be legal
 //        prevRet=CRAvg;
 
-        return CRAvg;
+
+        if (CRAvg > 300 ){
+            return CRAvg;
+        } else {
+            return 0;
+        }
 
     }
 
@@ -152,12 +190,12 @@ class ClimbInfo{
 
         pushValues(altitude,elapsedDistance,elapsedTime);
 
-        if (!ready){
-          return(prevRet); // LS data not ready...wait for more data
+        if (ready){
+          lsGrade = calcLSFit();
+          vam  = climbRate();
+          percGrade = calcSlopePercentage();
+//          System.println("Vam:"+vam);
+//          System.println("%grd:"+percGrade);
         }
-
-        grade = calcLSFit();
-        vam  = climbRate();
-        System.println("Vam:"+vam);
      }
 }

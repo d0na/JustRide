@@ -25,7 +25,7 @@ class HRInfo {
             return;
         }
 
-        System.println(hr);
+//        System.println(hr);
 
         if (hr >= zones[5]) {
             zone = 6;

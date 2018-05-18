@@ -187,12 +187,12 @@ class JustRideView extends WatchUi.DataField {
         /* BOX D */
         textAL(dc, 8,LINE_B+23, Gfx.FONT_XTINY,  "Avg");
         textCC(dc, dc.getWidth()/2,LINE_B+3, Gfx.FONT_XTINY,  "Speed (km/h)");
-        showGradeIcon(dc,fields.climbGrade);
+        showGradeIcon(dc,fields.climbLsGrade);
         textLC(dc, 6, LINE_B+45, Gfx.FONT_SMALL,  fields.avgSpeed);
         textC(dc, dc.getWidth()/2, LINE_B+45, Gfx.FONT_NUMBER_THAI_HOT, fields.speed);
 //        textRC(dc, dc.getWidth()-3, LINE_B+45, Gfx.FONT_SMALL,  "1000");
-        textRC(dc, dc.getWidth()-3, LINE_B+45, Gfx.FONT_NUMBER_MILD,  fields.climbGrade!=null?fields.climbGrade.format("%01d"):"0");
-//            textRC(dc, dc.getWidth()-3, LINE_B+70, Gfx.FONT_NUMBER_MILD,  fields.climbAltGrade!=null?fields.climbAltGrade.format("%01d"):"0");
+        textRC(dc, dc.getWidth()-3, LINE_B+45, Gfx.FONT_NUMBER_MILD,  fields.climbLsGrade!=null?fields.climbLsGrade.format("%01d"):"0");
+            textRC(dc, dc.getWidth()-3, LINE_B+70, Gfx.FONT_NUMBER_MILD,  fields.climbPercGrade!=null?fields.climbPercGrade.format("%01d"):"0");
 //            textRC(dc, dc.getWidth()-3, LINE_B+45, Gfx.FONT_NUMBER_MILD,  "18");
 
 

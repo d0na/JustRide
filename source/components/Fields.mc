@@ -20,7 +20,8 @@ class Fields {
     var speed;
     var avgSpeed;
     var climbRate;
-    var climbGrade;
+    var climbLsGrade;
+    var climbPercGrade;
     var rpm;
     var barometricAltitude;
 
@@ -52,30 +53,33 @@ class Fields {
             }
         }
 
+        //Elevation and pressure
         seaPressure = info.meanSeaLevelPressure;
         rawAmbientPressure = info.rawAmbientPressure;
         pressure = info.ambientPressure;
-        time = fmtTime(Sys.getClockTime());
-
-        elapsedTime = fmtSecs(info.timerTime);
-        speed = fmtSpeed(info.currentSpeed);
-        avgSpeed = fmtSpeed(info.averageSpeed);
         totalAscent = fmtAltitude(info.totalAscent);
         altitude = fmtAltitude(info.altitude);
         barometricAltitude = getBarometricAltitude(info.ambientPressure);
         barometricRawAltitude = getBarometricAltitude(info.rawAmbientPressure);
 
+        //Time
+        time = fmtTime(Sys.getClockTime());
+        elapsedTime = fmtSecs(info.timerTime);
+
+        //Speed
+        speed = fmtSpeed(info.currentSpeed);
+        avgSpeed = fmtSpeed(info.averageSpeed);
+
 
         rpm = info.currentCadence;
-//        rpm = 89;
         heartRate =  info.currentHeartRate;
-//        heartRate = 186;
         maxHeartRate = toStr(info.maxHeartRate);
 
         elapsedDistance  = fmtDistance(info.elapsedDistance);
 
         //Climb info
-        climbGrade = climbInfo.grade;
+        climbLsGrade = climbInfo.lsGrade;
+        climbPercGrade = climbInfo.percGrade;
         climbRate = climbInfo.vam;
     }
 
