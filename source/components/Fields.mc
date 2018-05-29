@@ -22,6 +22,7 @@ class Fields {
     var climbRate10sec;
     var climbRate30sec;
     var climbLsGrade;
+    var climbLsGrade5Sec;
     var climbPercGrade;
     var rpm;
     var barometricAltitude;
@@ -80,6 +81,7 @@ class Fields {
 
         //Climb info
         climbLsGrade = climbInfo.lsGrade;
+        climbLsGrade5Sec = climbInfo.lsGrade5Sec;
         climbPercGrade = climbInfo.percGrade;
         climbRate10sec = fmtVam(climbInfo.vam10sec);
         climbRate30sec = fmtVam(climbInfo.vam30sec);

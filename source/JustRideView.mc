@@ -147,6 +147,7 @@ class JustRideView extends WatchUi.DataField {
         drawBoxD(dc);
         drawBoxE(dc);
         drawBoxF(dc);
+        drawBoxG(dc);
     }
 
     /* BOX B */
@@ -167,7 +168,7 @@ class JustRideView extends WatchUi.DataField {
         textAL(dc, 5, LINE_A+2, Gfx.FONT_XTINY,  topLeftLabel);
         //middle
         textC(dc, dc.getWidth()/4, LINE_A+35, Gfx.FONT_NUMBER_MILD, middleField);
-        textAL(dc, (dc.getWidth()/2)-17,47 , Gfx.FONT_XTINY,  midRightLabel);
+        textAL(dc, (dc.getWidth()/2)-17,44 , Gfx.FONT_XTINY,  midRightLabel);
         midRightField;
         textC(dc,  dc.getWidth()/4, LINE_A+60 , Gfx.FONT_SMALL, botField );
         textAL(dc, (dc.getWidth()/2)-17,LINE_A+56 , Gfx.FONT_XTINY, botLabel );
@@ -185,22 +186,37 @@ class JustRideView extends WatchUi.DataField {
 
     function drawBoxD(dc){
         /* BOX D */
-        textAL(dc, 8,LINE_B+23, Gfx.FONT_XTINY,  "Avg");
+//        textAL(dc, 8,LINE_B+23, Gfx.FONT_XTINY,  "Avg");
+
+
+        //LEFT
+//        textLC(dc, 6, LINE_B+45, Gfx.FONT_SMALL,  fields.avgSpeed);
+        textAL(dc, 20, LINE_B+17, Gfx.FONT_XTINY,  "m/h");
+        textAR(dc, 20, LINE_B+7, ARROW_FONT,  "K");
+        textLC(dc, 8, LINE_B+45, Gfx.FONT_MEDIUM,  fields.climbRate30sec.format("%.1f"));//fields.climbRate30sec.format("%.1f")
+
+        //CENTRAL
         textCC(dc, dc.getWidth()/2,LINE_B+3, Gfx.FONT_XTINY,  "Speed (km/h)");
-        showGradeIcon(dc,fields.climbLsGrade);
-        textLC(dc, 6, LINE_B+45, Gfx.FONT_SMALL,  fields.avgSpeed);
         textC(dc, dc.getWidth()/2, LINE_B+45, Gfx.FONT_NUMBER_THAI_HOT, fields.speed);
+//        textC(dc, dc.getWidth()/2, LINE_B+45, Gfx.FONT_NUMBER_THAI_HOT, fields.speed);
 //        textRC(dc, dc.getWidth()-3, LINE_B+45, Gfx.FONT_SMALL,  "1000");
-        textRC(dc, dc.getWidth()-3, LINE_B+48, Gfx.FONT_SMALL,  fields.climbPercGrade!=null?fields.climbPercGrade.format("%.1f"):"0");
-        textRC(dc, dc.getWidth()-14, LINE_B+45, Gfx.FONT_NUMBER_MILD,  fields.climbPercGrade!=null?fields.climbPercGrade.format("%01d"):"0");
-        textRC(dc, dc.getWidth()-3, LINE_B+70, Gfx.FONT_NUMBER_MILD,  fields.climbLsGrade!=null?fields.climbLsGrade.format("%01d"):"0");
+//        textRC(dc, dc.getWidth()-3, LINE_B+45, Gfx.FONT_MEDIUM, "1000");//fields.climbRate30sec.format("%.1f")
+
+        //RIGHT
+// --comment
+        showGradeIcon(dc,fields.climbLsGrade);
+        var absGrade = fields.climbLsGrade.abs();
+        textAL(dc, dc.getWidth()-25, LINE_B+40, Gfx.FONT_SMALL,  absGrade!=null?absGrade.format("%.1f"):"0");
+        textAR(dc, dc.getWidth()-16, LINE_B+28, Gfx.FONT_NUMBER_MILD,  absGrade!=null?absGrade.format("%01d"):"0");
+// ---end
+        textRC(dc, dc.getWidth()-3, LINE_B+70, Gfx.FONT_MEDIUM,  fields.climbLsGrade5Sec!=null?fields.climbLsGrade5Sec.format("%.1f"):"0");
 //            textRC(dc, dc.getWidth()-3, LINE_B+45, Gfx.FONT_NUMBER_MILD,  "18");
 
 
-        textAR(dc, (dc.getWidth()/2)+10, LINE_B+64, Gfx.FONT_SMALL,  fields.climbRate10sec.format("%.1f"));
-        textAL(dc, 30, LINE_B+64, Gfx.FONT_SMALL,  fields.climbRate30sec.format("%.1f"));
-        textAL(dc, (dc.getWidth()/2)+25, LINE_B+69, Gfx.FONT_XTINY,  "m/h");
-        textAR(dc, (dc.getWidth()/2)+23, LINE_B+62, ARROW_FONT,  "K");
+        textAR(dc, (dc.getWidth()/2)+10, LINE_B+64, Gfx.FONT_SMALL,   fields.avgSpeed);
+//        textAL(dc, 30, LINE_B+64, Gfx.FONT_SMALL,   fields.avgSpeed);
+//        textAL(dc, (dc.getWidth()/2)+25, LINE_B+69, Gfx.FONT_XTINY,  "m/h");
+//        textAR(dc, (dc.getWidth()/2)+23, LINE_B+62, ARROW_FONT,  "K");
     }
 
     function drawBoxE(dc){
@@ -230,6 +246,30 @@ class JustRideView extends WatchUi.DataField {
 //            textC(dc, dc.getWidth()-20, LINE_C+6 s5, Gfx.FONT_XTINY, fields.pressure?fields.pressure.format("%.2f"):"0.0") ;
     }
 
+    function drawBoxG(dc){
+//            textAL(dc, 5, LINE_D+5, Gfx.FONT_SMALL,   fields.avgSpeed);
+//            textAR(dc, dc.getWidth()-5, LINE_D+5, Gfx.FONT_SMALL,   fields.elapsedDistance);
+            dc.setColor(Gfx.COLOR_BLUE, Gfx.COLOR_TRANSPARENT);  //reset colors
+
+            textAR(dc, 43, LINE_D+4, Gfx.FONT_SMALL,  fields.elapsedDistance);// fields.elapsedDistance
+            dc.setColor(Gfx.COLOR_LT_GRAY, Gfx.COLOR_TRANSPARENT);  //reset colors
+            textAL(dc, 46, LINE_D+7,  Gfx.FONT_XTINY,   "Dst");
+            dc.setColor(Gfx.COLOR_BLUE, Gfx.COLOR_TRANSPARENT);  //reset colors
+
+            textAR(dc, dc.getWidth()/2+7, LINE_D+4, Gfx.FONT_SMALL,   fields.avgSpeed); // fields.avgSpeed
+            dc.setColor(Gfx.COLOR_LT_GRAY, Gfx.COLOR_TRANSPARENT);  //reset colors
+            textAL(dc, (dc.getWidth()/2)+11, LINE_D+7,  Gfx.FONT_XTINY,   "Avg");
+            dc.setColor(Gfx.COLOR_BLUE, Gfx.COLOR_TRANSPARENT);  //reset colors
+
+            textAR(dc, (3*dc.getWidth()/4)+28, LINE_D+4, Gfx.FONT_SMALL,   fields.totalAscent);//fields.totalAscent
+            dc.setColor(Gfx.COLOR_LT_GRAY, Gfx.COLOR_TRANSPARENT);  //reset colors
+            textAL(dc, dc.getWidth()-18, LINE_D+7,  Gfx.FONT_XTINY,   "Asc");
+            dc.setColor(Gfx.COLOR_BLUE, Gfx.COLOR_TRANSPARENT);  //reset colors
+
+            dc.setColor(Gfx.COLOR_LT_GRAY, Gfx.COLOR_WHITE);  //reset colors
+
+    }
+
     function showBlinkingHeart(dc,hr){
         var time = System.getClockTime();
         var s = time.sec;
@@ -244,10 +284,11 @@ class JustRideView extends WatchUi.DataField {
     }
 
     function showGradeIcon(dc,grade){
-        dc.setColor(Gfx.COLOR_LT_GRAY, Gfx.COLOR_WHITE);
         if (grade >= 0.0){
+            dc.setColor(Gfx.COLOR_RED, Gfx.COLOR_WHITE);
             textAR(dc, dc.getWidth()-1,LINE_B+12, ARROW_FONT,  "O");
         } else {
+            dc.setColor(Gfx.COLOR_GREEN, Gfx.COLOR_WHITE);
             textAR(dc, dc.getWidth()-1,LINE_B+12, ARROW_FONT,  "P");
         }
         dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_WHITE);
