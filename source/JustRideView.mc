@@ -61,6 +61,7 @@ class JustRideView extends WatchUi.DataField {
         fields.compute(info);
         lapInfo.compute(info);
         hrInfo.compute(info.currentHeartRate);
+
         return 1;
     }
 
@@ -137,7 +138,8 @@ class JustRideView extends WatchUi.DataField {
         dc.drawLine(0, LINE_C, dc.getWidth(), LINE_C);
         dc.drawLine(0, LINE_D, dc.getWidth(), LINE_D);
         // vertical lines
-        dc.drawLine(dc.getWidth()/2, LINE_A, dc.getWidth()/2, LINE_B);
+        dc.drawLine(dc.getWidth()/2, LINE_A, dc.getWidth()/2, 28);
+        dc.drawLine(dc.getWidth()/2, 65, dc.getWidth()/2, LINE_B);
         dc.drawLine(dc.getWidth()/2, LINE_C, dc.getWidth()/2, LINE_D);
     }
 
@@ -160,15 +162,15 @@ class JustRideView extends WatchUi.DataField {
         var midRightLabel =  "Lap";
         var midRightField = getLapString(dc);
 
-        var botField = fields.elapsedDistance;
-        var botLabel = "Tot";
+        var botField = lapInfo.lapAvgSpeed()?lapInfo.lapAvgSpeed().format("%.1f"):"--.-";
+        var botLabel = "Avg";
 
 
         //top Left
         textAL(dc, 5, LINE_A+2, Gfx.FONT_XTINY,  topLeftLabel);
         //middle
         textC(dc, dc.getWidth()/4, LINE_A+35, Gfx.FONT_NUMBER_MILD, middleField);
-        textAL(dc, (dc.getWidth()/2)-17,44 , Gfx.FONT_XTINY,  midRightLabel);
+        textAL(dc, (dc.getWidth()/2)-6,28 , Gfx.FONT_XTINY,  midRightLabel);
         midRightField;
         textC(dc,  dc.getWidth()/4, LINE_A+60 , Gfx.FONT_SMALL, botField );
         textAL(dc, (dc.getWidth()/2)-17,LINE_A+56 , Gfx.FONT_XTINY, botLabel );
@@ -178,10 +180,10 @@ class JustRideView extends WatchUi.DataField {
     function drawBoxC(dc){
         //top Left
         textAR(dc, dc.getWidth()-2, LINE_A+2, Gfx.FONT_XTINY,  "Climb (m)");
-        textC(dc, 3*dc.getWidth()/4, LINE_A+35, Gfx.FONT_NUMBER_MILD,  fields.totalAscent);
+        textC(dc, (3*dc.getWidth()/4)-3, LINE_A+35, Gfx.FONT_NUMBER_MILD,  lapInfo.lapElevation()?lapInfo.lapElevation().format("%0d"):"---");
         textAL(dc, dc.getWidth()-17,47 , Gfx.FONT_XTINY,  "Asc");
-        textC(dc,  3*dc.getWidth()/4, LINE_A+60 , Gfx.FONT_SMALL, fields.altitude);
-        textAL(dc, dc.getWidth()-17,LINE_A+56 , Gfx.FONT_XTINY,  "Alt");
+        textC(dc,  (3*dc.getWidth()/4), LINE_A+60 , Gfx.FONT_SMALL, lapInfo.lapVam()?lapInfo.lapVam().format("%0d"):"---");
+        textAL(dc, dc.getWidth()-17,LINE_A+56 , Gfx.FONT_XTINY,  "Vam");
     }
 
     function drawBoxD(dc){
@@ -204,12 +206,12 @@ class JustRideView extends WatchUi.DataField {
 
         //RIGHT
 // --comment
-        showGradeIcon(dc,fields.climbLsGrade);
-        var absGrade = fields.climbLsGrade.abs();
-        textAL(dc, dc.getWidth()-25, LINE_B+40, Gfx.FONT_SMALL,  absGrade!=null?absGrade.format("%.1f"):"0");
-        textAR(dc, dc.getWidth()-16, LINE_B+28, Gfx.FONT_NUMBER_MILD,  absGrade!=null?absGrade.format("%01d"):"0");
+//        showGradeIcon(dc,fields.climbLsGrade5Sec);
+        textAL(dc, dc.getWidth()-10,LINE_B+34, Gfx.FONT_XTINY,  "%");
+//        textAR(dc, dc.getWidth()-13, LINE_B+28, Gfx.FONT_NUMBER_MILD,  fields.climbLsGrade5Sec!=null?"12":"-15");
+        textAR(dc,  dc.getWidth()-13, LINE_B+28, Gfx.FONT_NUMBER_MILD,  fields.climbLsGrade5Sec!=null?fields.climbLsGrade5Sec.format("%01d"):"-15");
 // ---end
-        textRC(dc, dc.getWidth()-3, LINE_B+70, Gfx.FONT_MEDIUM,  fields.climbLsGrade5Sec!=null?fields.climbLsGrade5Sec.format("%.1f"):"0");
+//        textRC(dc, dc.getWidth()-3, LINE_B+70, Gfx.FONT_MEDIUM,  fields.climbLsGrade5Sec!=null?fields.climbLsGrade5Sec.format("%.1f"):"0");
 //            textRC(dc, dc.getWidth()-3, LINE_B+45, Gfx.FONT_NUMBER_MILD,  "18");
 
 
@@ -410,13 +412,13 @@ class JustRideView extends WatchUi.DataField {
      function drawTime(dc) {
           var time = fields.time;
           dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_TRANSPARENT);
-          textAL(dc,5,5,Gfx.FONT_XTINY,time);
+          textAL(dc,10,2,Gfx.FONT_SMALL,time);
       }
 
     function drawElapsedTime(dc) {
         var time = fields.elapsedTime;
         //          var formatedTime = time.hour+":"+time.min;
-        dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_TRANSPARENT);
+        dc.setColor(Gfx.COLOR_BLUE, Gfx.COLOR_TRANSPARENT);
         textC(dc,dc.getWidth()/2,11,Gfx.FONT_SMALL,time);
     }
 
@@ -462,7 +464,7 @@ class JustRideView extends WatchUi.DataField {
         dc.setColor(dataColor, Gfx.COLOR_WHITE);
         var lapString =lapInfo.getLapString();
         //! Draw the lap number
-        dc.drawText((dc.getWidth()/2)-12,65, Gfx.FONT_XTINY, lapString, (Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER));
+        dc.drawText((dc.getWidth()/2),50, Gfx.FONT_SMALL, lapString, (Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER));
         dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_WHITE);
     }
 

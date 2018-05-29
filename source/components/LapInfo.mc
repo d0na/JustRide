@@ -8,6 +8,8 @@ class LapInfo {
     hidden var lapCertainty = "";
 
     hidden var lastElapsedDistance = 0;
+    hidden var lastElapsedTime = 0;
+    hidden var lastAltitude = 0;
     hidden var info;
     hidden var metric = 0;
 
@@ -36,6 +38,8 @@ class LapInfo {
     function newLap(){
         lapCounter++;
         me.lastElapsedDistance = info.elapsedDistance;
+        me.lastAltitude = info.altitude;
+        me.lastElapsedTime = info.elapsedTime;
     }
 
 
@@ -85,19 +89,58 @@ class LapInfo {
     }
 
     function lapElapsedTime(){
+        if (info.elapsedTime == null || me.lastElapsedTime == null){
+            return null;
+        }
 
-    }
-
-    function lapAvgSpeed(){
-
+        return (info.elapsedTime - me.lastElapsedTime);
     }
 
     function lapElevation(){
 
+        if (info.altitude == null || me.lastAltitude == null){
+            return null;
+        }
+        return info.altitude-me.lastAltitude;
     }
 
     function lapVam(){
 
+        var gain =  lapElevation();
+        var timeInSec = lapElapsedTime();
+        var res= 0;
+
+        if (gain == null || timeInSec == null ){
+            return null;
+        }
+        timeInSec = timeInSec.toFloat()/1000; //transform time in sec
+
+        if (timeInSec > 0 ){
+            res = gain * 3600/timeInSec;
+        }
+        return res;
+    }
+
+    function lapAvgSpeed(){
+
+        var dist = elapsedDistance();
+
+
+        var timeInHour = 0.0;
+        timeInHour = lapElapsedTime();
+        var res = 0;
+
+        if (dist == null || timeInHour == null){
+            return null;
+        }
+
+        timeInHour = timeInHour.toFloat()  / 3600000;
+
+        if (timeInHour > 0){
+            res= (dist/timeInHour);
+        }
+
+        return res;
     }
 
     function fmtDistance(dst){

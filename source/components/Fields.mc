@@ -178,7 +178,7 @@ class Fields {
 
     function fmtAltitude(alt){
         if (alt == null) {
-            return "___";
+            return "2032";
         }
         return (alt).format("%01d");
     }
