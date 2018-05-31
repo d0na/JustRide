@@ -9,9 +9,13 @@ class LapInfo {
 
     hidden var lastElapsedDistance = 0;
     hidden var lastElapsedTime = 0;
-    hidden var lastAltitude = 0;
+    hidden var lastTotAscent = 0;
+    hidden var lapAvgRpm = 0;
+    hidden var prevAlt = 0;
+    hidden var curAlt = 0;
     hidden var info;
     hidden var metric = 0;
+    hidden var tick = 0;
 
     enum
     {
@@ -32,14 +36,17 @@ class LapInfo {
 
     function compute(info){
         me.info = info;
+        tick++;
     }
 
 
     function newLap(){
         lapCounter++;
         me.lastElapsedDistance = info.elapsedDistance;
-        me.lastAltitude = info.altitude;
+        me.lastTotAscent = info.totalAscent;
         me.lastElapsedTime = info.elapsedTime;
+        me.lapAvgRpm = 0;
+        me.tick = 0;
     }
 
 
@@ -85,7 +92,7 @@ class LapInfo {
         if (info.elapsedDistance == null || me.lastElapsedDistance == null){
             return null;
         }
-        return fmtDistance(info.elapsedDistance - me.lastElapsedDistance);
+        return info.elapsedDistance - me.lastElapsedDistance;
     }
 
     function lapElapsedTime(){
@@ -98,10 +105,10 @@ class LapInfo {
 
     function lapElevation(){
 
-        if (info.altitude == null || me.lastAltitude == null){
+        if (info.totalAscent == null || me.lastTotAscent == null){
             return null;
         }
-        return info.altitude-me.lastAltitude;
+        return info.totalAscent-me.lastTotAscent;
     }
 
     function lapVam(){
@@ -123,34 +130,30 @@ class LapInfo {
 
     function lapAvgSpeed(){
 
-        var dist = elapsedDistance();
+        var dist = 0.0;
+        var time = 0.0;
 
-
-        var timeInHour = 0.0;
-        timeInHour = lapElapsedTime();
-        var res = 0;
-
-        if (dist == null || timeInHour == null){
+        if (elapsedDistance() == null ||  lapElapsedTime() == null){
             return null;
         }
 
-        timeInHour = timeInHour.toFloat()  / 3600000;
+        dist = elapsedDistance();
+        time = lapElapsedTime()/1000;
 
-        if (timeInHour > 0){
-            res= (dist/timeInHour);
+        if (dist == null ||  time == null || time <= 0){
+            return null;
         }
+        return (dist/time);
 
-        return res;
     }
 
-    function fmtDistance(dst){
-        var dist;
-        if (metric) {
-                dist = dst / 1000.0;
-            } else {
-                dist = dst / 1609.0;
-        }
-        return dist;
-    }
+    function lapAvgCadence(){
 
+        if (info.currentCadence != null){
+            lapAvgRpm += info.currentCadence;
+            return lapAvgRpm/tick;
+        }
+
+        return 0;
+    }
 }
