@@ -12,7 +12,7 @@ class HRInfo {
 
     function initialize(){
         zones = Ui.getHeartRateZones(UserProfile.HR_ZONE_SPORT_BIKING);
-        System.println("The user HR zone " + zones);
+//        System.println("The user HR zone " + zones);
     }
 
     function compute(hr){

@@ -203,7 +203,9 @@ class JustRideView extends WatchUi.DataField {
         textAL(dc, dc.getWidth()-10,LINE_B+34, Gfx.FONT_XTINY,  "%");
         drawGrade(dc,dc.getWidth()-13, LINE_B+28,fields.climbLsGrade5Sec);
 
-        textRC(dc, dc.getWidth()-3, LINE_B+70, Gfx.FONT_MEDIUM,  fmt.elevation(fields.altitude));
+        textRC(dc, dc.getWidth()-14, LINE_B+74, Gfx.FONT_SMALL,  fmt.elevation(fields.altitude));
+        textAL(dc, dc.getWidth()-10, LINE_B+70, Gfx.FONT_XTINY,  "m");
+        textAL(dc, dc.getWidth()-10 , LINE_B+64, Gfx.FONT_XTINY,  "^");
 
 //        textAR(dc, (dc.getWidth()/2)+10, LINE_B+64, Gfx.FONT_SMALL,   fields.avgSpeed);
 //        textAL(dc, 30, LINE_B+64, Gfx.FONT_SMALL,   fields.avgSpeed);
@@ -453,9 +455,9 @@ class JustRideView extends WatchUi.DataField {
     }
 
     function drawVamIcon(dc,x,y){
+        textAR(dc, x-1, y, ARROW_FONT,  "K");
         textAL(dc, x, y, Gfx.FONT_XTINY,  "m");
-        textAL(dc, x, y+9,  Gfx.FONT_XTINY,  "h");
-        textAR(dc, x+19, y, ARROW_FONT,  "K");
+        textAL(dc, x+2, y+10,  Gfx.FONT_XTINY,  "h");
     }
 
 

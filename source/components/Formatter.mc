@@ -1,13 +1,5 @@
 class Formatter {
 
-    hidden var metric = 0;
-    hidden var is24Hour= true;
-
-    function initiliaze(){
-        metric=(Toybox.System.getDeviceSettings().paceUnits==Toybox.System.UNIT_METRIC);
-        is24Hour = Sys.getDeviceSettings().is24Hour;
-    }
-
     function timeOptHour(time) {
         if (time == null) {
             return "--:--";
@@ -32,7 +24,7 @@ class Formatter {
             return "--.-";
         }
 
-        if (me.metric) {
+        if (System.getDeviceSettings().paceUnits==Toybox.System.UNIT_METRIC) {
                 dist = dst / 1000.0;
             } else {
                 dist = dst / 1609.0;
@@ -56,7 +48,11 @@ class Formatter {
         }
 
         var unit = 2.2; // miles
-        if (metric) {
+
+
+
+        if (System.getDeviceSettings().paceUnits==Toybox.System.UNIT_METRIC) {
+            System.println("yes");
             unit = 3.6; // km
         }
         return (unit * speed).format("%.1f");
@@ -76,7 +72,7 @@ class Formatter {
 
      function clock(clock) {
         var h = clock.hour;
-        if (!is24Hour) {
+        if (! System.getDeviceSettings().is24Hour) {
             if (h > 12) {
                 h -= 12;
             } else if (h == 0) {

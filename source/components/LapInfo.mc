@@ -36,7 +36,6 @@ class LapInfo {
 
     function compute(info){
         me.info = info;
-        tick++;
     }
 
 
@@ -44,7 +43,7 @@ class LapInfo {
         lapCounter++;
         me.lastElapsedDistance = info.elapsedDistance;
         me.lastTotAscent = info.totalAscent;
-        me.lastElapsedTime = info.elapsedTime;
+        me.lastElapsedTime = info.timerTime;
         me.lapAvgRpm = 0;
         me.tick = 0;
     }
@@ -96,11 +95,11 @@ class LapInfo {
     }
 
     function lapElapsedTime(){
-        if (info.elapsedTime == null || me.lastElapsedTime == null){
+        if (info.timerTime == null || me.lastElapsedTime == null){
             return null;
         }
 
-        return (info.elapsedTime - me.lastElapsedTime);
+        return (info.timerTime - me.lastElapsedTime);
     }
 
     function lapElevation(){
@@ -149,11 +148,12 @@ class LapInfo {
 
     function lapAvgCadence(){
 
-        if (info.currentCadence != null){
+        if (info.currentCadence != null && info.currentCadence > 0){
+            tick++;
             lapAvgRpm += info.currentCadence;
             return lapAvgRpm/tick;
         }
 
-        return 0;
+        return null;
     }
 }
