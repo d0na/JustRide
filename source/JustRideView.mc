@@ -196,11 +196,20 @@ class JustRideView extends WatchUi.DataField {
         textCC(dc, dc.getWidth()/2,LINE_B+3, Gfx.FONT_XTINY,  "Speed (km/h)");
         textC(dc, dc.getWidth()/2, LINE_B+45, Gfx.FONT_NUMBER_THAI_HOT, fmt.speed(fields.speed));
         textC(dc, dc.getWidth()/2, LINE_B+74, Gfx.FONT_MEDIUM, fmt.vam(fields.climbRate30sec));
-        drawVamIcon(dc,dc.getWidth()/2+22,LINE_B+61);
+        drawVamIcon(dc,dc.getWidth()/2+28,LINE_B+61);
 
         //RIGHT
+//        dc.setColor(Gfx.COLOR_BLUE, Gfx.COLOR_TRANSPARENT);
 //        showGradeIcon(dc,fields.climbLsGrade5Sec);
+//        textAL(dc, dc.getWidth()-10,LINE_B+6, Gfx.FONT_XTINY,  "%");
+//        textAL(dc, dc.getWidth()-10,LINE_B+16, Gfx.FONT_XTINY,  "5s");
+//        drawGrade(dc,dc.getWidth()-13, LINE_B,fields.climbLsGrade10Sec);
+//        dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_TRANSPARENT);
+
+
         textAL(dc, dc.getWidth()-10,LINE_B+34, Gfx.FONT_XTINY,  "%");
+        textAL(dc, dc.getWidth()-10,LINE_B+44, Gfx.FONT_XTINY,  "5s");
+
         drawGrade(dc,dc.getWidth()-13, LINE_B+28,fields.climbLsGrade5Sec);
 
         textRC(dc, dc.getWidth()-14, LINE_B+74, Gfx.FONT_SMALL,  fmt.elevation(fields.altitude));

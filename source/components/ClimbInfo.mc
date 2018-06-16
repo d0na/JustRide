@@ -33,7 +33,7 @@ class ClimbInfo{
     hidden var ready30sec=false; // set when we've got full arrays
 
     //public fields
-    var lsGrade =0.0;
+    var lsGrade10Sec =0.0;
     var lsGrade5Sec =0.0;
     var percGrade =0.0;
     var vam10sec =0.0;
@@ -196,8 +196,7 @@ class ClimbInfo{
         pushValues(altitude,elapsedDistance);
 
         if (ready10sec){
-          lsGrade = calcLSFit(SAMPLES_10_SEC);
-          lsGrade5Sec = calcLSFit(SAMPLES_5_SEC);
+          lsGrade10Sec = calcLSFit(SAMPLES_10_SEC);
 //          percGrade = calcSlopePercentage();
 
           vam10sec  = climbRate10sec();
