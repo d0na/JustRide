@@ -1,4 +1,11 @@
 using Toybox.Application as App;
+using Toybox.WatchUi as Ui;
+
+var instructionString;
+var resultString;
+var dialogHeaderString;
+var confirmString;
+var cancelString;
 
 class JustRideApp extends App.AppBase {
 
@@ -8,6 +15,11 @@ class JustRideApp extends App.AppBase {
 
     // onStart() is called on application start up
     function onStart(state) {
+            instructionString = Ui.loadResource(Rez.Strings.TestInfo);
+            resultString = Ui.loadResource(Rez.Strings.DefaultResponse);
+            dialogHeaderString = Ui.loadResource(Rez.Strings.DialogHeader);
+            confirmString = Ui.loadResource(Rez.Strings.Confirm);
+            cancelString = Ui.loadResource(Rez.Strings.Cancel);
     }
 
     // onStop() is called when your application is exiting
@@ -16,7 +28,7 @@ class JustRideApp extends App.AppBase {
 
     // Return the initial view of your application here
     function getInitialView() {
-        return [ new JustRideView() ];
+        return [ new JustRideView(),  new BaseInputDelegate()];
     }
 
 }

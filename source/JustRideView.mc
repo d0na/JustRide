@@ -51,12 +51,15 @@ class JustRideView extends WatchUi.DataField {
     hidden var lapInfo;
     hidden var hrInfo;
     hidden var fmt;
+    hidden var menuPopUp;
 
     function initialize() {
         fields = new Fields();
         lapInfo = new LapInfo();
         hrInfo = new HRInfo();
         fmt = new Formatter();
+        menuPopUp = new BaseInputDelegate();
+
     }
 
     function compute(info) {
@@ -80,6 +83,7 @@ class JustRideView extends WatchUi.DataField {
 
     function onTimerLap(){
         lapInfo.newLap();
+        menuPopUp.pushDialog();
     }
 
     //! The timer was started, so set the state to running.
