@@ -136,12 +136,14 @@ class JustRideView extends WatchUi.DataField {
 
         // horizontal lines
         dc.drawLine(0, LINE_A, dc.getWidth(), LINE_A);
+        dc.drawLine(0, LINE_A-1, dc.getWidth(), LINE_A-1);
         dc.drawLine(0, LINE_B, dc.getWidth(), LINE_B);
+        dc.drawLine(0, LINE_B-1, dc.getWidth(), LINE_B-1);
         dc.drawLine(0, LINE_C, dc.getWidth(), LINE_C);
         dc.drawLine(0, LINE_D, dc.getWidth(), LINE_D);
         // vertical lines
         dc.drawLine(dc.getWidth()/2, LINE_A, dc.getWidth()/2, 28);
-        dc.drawLine(dc.getWidth()/2, 65, dc.getWidth()/2, LINE_B);
+//        dc.drawLine(dc.getWidth()/2, 65, dc.getWidth()/2, LINE_B);
         dc.drawLine(dc.getWidth()/2, LINE_C, dc.getWidth()/2, LINE_D);
     }
 
@@ -172,6 +174,11 @@ class JustRideView extends WatchUi.DataField {
         textAL(dc, (dc.getWidth()/2)-6,28 , Gfx.FONT_XTINY,  midRightLabel);
         getLapString(dc,(dc.getWidth()/2),52);
         textC(dc,  dc.getWidth()/4, LINE_A+60 , Gfx.FONT_SMALL, botField );
+
+        dc.setColor(Gfx.COLOR_BLUE, Gfx.COLOR_TRANSPARENT);
+        textAL(dc, (dc.getWidth()/2)-6,LINE_A+47 , Gfx.FONT_XTINY,  "LAP");
+        textAL(dc, (dc.getWidth()/2)-10,LINE_A+57 , Gfx.FONT_XTINY,  "DATA");
+        dc.setColor(Gfx.COLOR_BLACK, BACKGROUND_COLOR);
     }
 
     /* BOX C */
