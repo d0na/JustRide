@@ -21,7 +21,7 @@ class Fields {
     var avgSpeed;
     var climbRate10sec;
     var climbRate30sec;
-    var climbLsGrade;
+    var climbLsGrade10Sec;
     var climbLsGrade5Sec;
     var climbPercGrade;
     var rpm;
@@ -82,7 +82,7 @@ class Fields {
         elapsedDistance  = info.elapsedDistance;
 
         //Climb info
-        climbLsGrade = climbInfo.lsGrade;
+        climbLsGrade10Sec = climbInfo.lsGrade10Sec;
         climbLsGrade5Sec = climbInfo.lsGrade5Sec;
         climbPercGrade = climbInfo.percGrade;
         climbRate10sec = climbInfo.vam10sec;
