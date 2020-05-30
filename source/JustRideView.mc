@@ -191,13 +191,20 @@ class JustRideView extends WatchUi.DataField {
         textAR(dc, dc.getWidth()-5,LINE_A+56 , Gfx.FONT_XTINY,  "Vam");
     }
 
-    function drawMainBox(dc){
-        /* BOX D */
 
+    /* BOX D */
+    function drawMainBox(dc){
 
         //LEFT
         textAL(dc, 8,LINE_B+23, Gfx.FONT_XTINY,  "Avg");
         textLC(dc, 6, LINE_B+45, Gfx.FONT_SMALL,  fmt.speed(lapInfo.lapAvgSpeed()));
+
+        //left bottom
+        //textAL(dc, 6,LINE_B+70, Gfx.FONT_XTINY, fields.frontDerailleurSize);
+        textAL(dc, 25,LINE_B+65, Gfx.FONT_XTINY, "Gear");
+        textAL(dc, 6,LINE_B+65, Gfx.FONT_SMALL, fields.rearDerailleurSize);
+
+//        textLC(dc, 6, LINE_B+45, Gfx.FONT_SMALL,  fmt.speed(lapInfo.lapAvgSpeed()));
 
         //CENTRAL
         textCC(dc, dc.getWidth()/2,LINE_B+3, Gfx.FONT_XTINY,  "Speed (km/h)");

@@ -26,6 +26,9 @@ class Fields {
     var climbPercGrade;
     var rpm;
     var barometricAltitude;
+    var frontDerailleurSize;
+    var rearDerailleurSize;
+
 
     var time;
     var pressure;
@@ -84,6 +87,10 @@ class Fields {
         climbPercGrade = climbInfo.percGrade;
         climbRate10sec = climbInfo.vam10sec;
         climbRate30sec = climbInfo.vam30sec;
+
+        //Gear
+        frontDerailleurSize = info.frontDerailleurSize;
+        rearDerailleurSize = info.rearDerailleurSize;
     }
 
     /*******************
