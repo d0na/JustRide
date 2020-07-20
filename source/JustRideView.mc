@@ -42,10 +42,10 @@ class JustRideView extends WatchUi.DataField {
     const BACKGROUND_COLOR = Gfx.COLOR_TRANSPARENT;
     const LINE_COLOR = Gfx.COLOR_BLUE;
 
-    const LINE_A = 20;
-    const LINE_B = 90;
-    const LINE_C = 172;
-    const LINE_D = 244;
+    const LINE_A = 66;
+    const LINE_B = 132;
+    const LINE_C = 198;
+    const LINE_D = 264;
 
     hidden var fields;
     hidden var ARROW_FONT;
@@ -124,9 +124,9 @@ class JustRideView extends WatchUi.DataField {
 
         drawBottomLeftBoxs(dc);
         //Upper Bar
-        drawBattery(dc);
-        drawTime(dc,10,2);
-        drawElapsedTime(dc,dc.getWidth()/2,11);
+//        drawBattery(dc);
+//        drawTime(dc,10,2);
+//        drawElapsedTime(dc,dc.getWidth()/2,11);
         //Body
         drawLayout(dc);
         //Footer
