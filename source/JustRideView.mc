@@ -161,13 +161,13 @@ class JustRideView extends WatchUi.DataField {
         drawFootertBox(dc);
     }
 
-    /* BOX B */
+    /* BOX A */
     function drawBoxA_Left(dc){
 
         var lapElapsedDistance = lapInfo.elapsedDistance();
 
         //LAP Distance
-        textAR(dc, (dc.getWidth()/2)-4, LINE_0+10, Gfx.FONT_XTINY,  "Km");
+        textAR(dc, (dc.getWidth()/2)-4, LINE_0+15, Gfx.FONT_XTINY,  "Km");
         //Variable size depenging on the lapElapsedDistance
         if(lapElapsedDistance == null || lapElapsedDistance < 1000){
             textC(dc, dc.getWidth()/4, LINE_0+25, Gfx.FONT_NUMBER_MEDIUM, fmt.distance(lapElapsedDistance));
@@ -192,12 +192,16 @@ class JustRideView extends WatchUi.DataField {
 
     /* BOX C */
     function drawBoxA_Right(dc){
-        //top Left
-        textAR(dc, dc.getWidth()-2, LINE_A+2, Gfx.FONT_XTINY,  "Climb (m)");
-        textC(dc, (3*dc.getWidth()/4)-3, LINE_A+35, Gfx.FONT_NUMBER_MILD,  fmt.elevation(lapInfo.lapElevation()));
-        textAR(dc, dc.getWidth()-5,47 , Gfx.FONT_XTINY,  "Asc");
-        textC(dc,  (3*dc.getWidth()/4), LINE_A+60 , Gfx.FONT_SMALL, fmt.vam(lapInfo.lapVam()));
-        textAR(dc, dc.getWidth()-5,LINE_A+56 , Gfx.FONT_XTINY,  "Vam");
+        //ASC
+        textAR(dc, dc.getWidth()-4, LINE_0+15, Gfx.FONT_XTINY,  "ASC");
+        textC(dc, (3*dc.getWidth()/4)-3, LINE_0+25, Gfx.FONT_NUMBER_MILD,  fmt.elevation(lapInfo.lapElevation()));
+        //VAM
+        textAR(dc, dc.getWidth()-4,47 , Gfx.FONT_XTINY,  "VAM");
+        textC(dc,  (3*dc.getWidth()/4), LINE_0+50 , Gfx.FONT_MEDIUM, fmt.vam(lapInfo.lapVam()));
+
+        //To insert LAP %
+//        textAL(dc,  (dc.getWidth()/2)+2, LINE_0+39 , Gfx.FONT_MEDIUM, 12);
+//        textAL(dc,  (dc.getWidth()/2)+20, LINE_0+47 , Gfx.FONT_XTINY, "%");
     }
 
 
