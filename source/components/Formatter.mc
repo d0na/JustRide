@@ -10,11 +10,11 @@ class Formatter {
         var minute = (time / 60).toLong() - (hour * 60);
         var second = time - (minute * 60) - (hour * 3600);
 
-        if (hour > 0) {
+//        if (hour > 0) {
             return Lang.format("$1$:$2$:$3$", [hour.format("%d"), minute.format("%02d"), second.format("%02d")]);
-        } else {
-            return Lang.format("$1$:$2$", [minute.format("%02d"), second.format("%02d")]);
-        }
+//        } else {
+//            return Lang.format("$1$:$2$", [minute.format("%02d"), second.format("%02d")]);
+//        }
     }
 
     function distance(dst) {
