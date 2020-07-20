@@ -1,4 +1,5 @@
 using Toybox.Activity as Act;
+using Toybox.System as Sys;
 
 class LapInfo {
 
@@ -11,11 +12,14 @@ class LapInfo {
     hidden var lastElapsedTime = 0;
     hidden var lastTotAscent = 0;
     hidden var lapAvgRpm = 0;
+    hidden var _lapAvgPower = 0;
     hidden var prevAlt = 0;
     hidden var curAlt = 0;
     hidden var info;
     hidden var metric = 0;
     hidden var tick = 0;
+    hidden var tickPwr = 0;
+    hidden var tickRPM = 0;
 
     enum
     {
@@ -36,6 +40,7 @@ class LapInfo {
 
     function compute(info){
         me.info = info;
+        me.tick++;
     }
 
 
@@ -46,6 +51,9 @@ class LapInfo {
         me.lastElapsedTime = info.timerTime;
         me.lapAvgRpm = 0;
         me.tick = 0;
+        me.tickPwr = 0;
+        me.tickRPM = 0;
+        me._lapAvgPower = 0;
     }
 
 
@@ -149,11 +157,22 @@ class LapInfo {
     function lapAvgCadence(){
 
         if (info.currentCadence != null && info.currentCadence > 0){
-            tick++;
+            tickRPM++;
             lapAvgRpm += info.currentCadence;
             return lapAvgRpm/tick;
         }
 
         return null;
     }
+
+    function lapAvgPower(){
+            if (info.currentPower != null ){
+                tickPwr++;
+                _lapAvgPower += info.currentPower;
+
+                return _lapAvgPower/tickPwr;
+            }
+
+            return null;
+        }
 }
