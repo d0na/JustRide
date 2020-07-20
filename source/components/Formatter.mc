@@ -52,7 +52,7 @@ class Formatter {
 
 
         if (System.getDeviceSettings().paceUnits==Toybox.System.UNIT_METRIC) {
-            System.println("yes");
+//            System.println("yes");
             unit = 3.6; // km
         }
         return (unit * speed).format("%.1f");
@@ -68,6 +68,14 @@ class Formatter {
         } else {
             return 0;
         }
+    }
+
+    function number(val){
+        if (val == null ){
+            return "0";
+        }
+
+        return val;
     }
 
      function clock(clock) {
