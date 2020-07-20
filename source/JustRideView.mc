@@ -3,6 +3,8 @@ using Toybox.Graphics as Gfx;
 using Toybox.System as Sys;
 using Toybox.UserProfile;
 using Toybox.Activity as Act;
+using Toybox.AntPlus as Ant;
+
 
      /*
                 -------------------------------     0
@@ -57,11 +59,13 @@ class JustRideView extends WatchUi.DataField {
         lapInfo = new LapInfo();
         hrInfo = new HRInfo();
         fmt = new Formatter();
+//        powerInfo = new PowerInfo();
     }
 
     function compute(info) {
         fields.compute(info);
         lapInfo.compute(info);
+//        powerInfo.compute(info);
         hrInfo.compute(info.currentHeartRate);
 
         return 1;
@@ -195,22 +199,45 @@ class JustRideView extends WatchUi.DataField {
     /* BOX D */
     function drawMainBox(dc){
 
+var pedalPowerPercent = Ant.PedalPowerBalance.pedalPowerPercent;
+var rightPedalIndicator = Ant.PedalPowerBalance.rightPedalIndicator;
+
+
         //LEFT
-        textAL(dc, 8,LINE_B+23, Gfx.FONT_XTINY,  "Avg");
-        textLC(dc, 6, LINE_B+45, Gfx.FONT_SMALL,  fmt.speed(lapInfo.lapAvgSpeed()));
+        textAL(dc, 40,LINE_B+3, Gfx.FONT_XTINY,  "Avg");
+        textLC(dc, 7, LINE_B+13, Gfx.FONT_SMALL,  fmt.speed(lapInfo.lapAvgSpeed()));
+//        textLC(dc, 10, LINE_B+10, Gfx.FONT_SMALL,  fmt.number(lapInfo.lapAvgPower()));
+
+        textAL(dc, 40,LINE_B+28, Gfx.FONT_XTINY,  "Avg");
+        textAL(dc, 40,LINE_B+38, Gfx.FONT_XTINY,  "Pwr");
+//        textAL(dc, 44,LINE_B+28, Gfx.FONT_XTINY,  "%");
+//        textAL(dc, 44,LINE_B+37, Gfx.FONT_XTINY,  "Bal");
+//        textLC(dc, 6, LINE_B+40, Gfx.FONT_SMALL,  fmt.number(pedalPowerPercent)+"/"+fmt.number(rightPedalIndicator));
+
+        textLC(dc, 6, LINE_B+40, Gfx.FONT_SMALL,  fmt.number(lapInfo.lapAvgPower()));
+//        textLC(dc, 10, LINE_B+10, Gfx.FONT_SMALL,  fmt.speed(lapInfo.lapAvgSpeed()));
+
 
         //left bottom
         //textAL(dc, 6,LINE_B+70, Gfx.FONT_XTINY, fields.frontDerailleurSize);
-        textAL(dc, 25,LINE_B+65, Gfx.FONT_XTINY, "Gear");
-        textAL(dc, 6,LINE_B+65, Gfx.FONT_SMALL, fields.rearDerailleurSize);
+//        textAL(dc, 25,LINE_B+65, Gfx.FONT_XTINY, "PZone");
+//        textAL(dc, 6,LINE_B+65, Gfx.FONT_SMALL, fmt.vam(fields.climbRate30sec));
+//        drawVamIcon(dc,52,LINE_B+61);
+        textAL(dc, 40, LINE_B+68, Gfx.FONT_XTINY,  "R.D.");
+        textAL(dc, 13,LINE_B+65, Gfx.FONT_SMALL, fields.rearDerailleurSize);
 
 //        textLC(dc, 6, LINE_B+45, Gfx.FONT_SMALL,  fmt.speed(lapInfo.lapAvgSpeed()));
 
         //CENTRAL
-        textCC(dc, dc.getWidth()/2,LINE_B+3, Gfx.FONT_XTINY,  "Speed (km/h)");
-        textC(dc, dc.getWidth()/2, LINE_B+45, Gfx.FONT_NUMBER_THAI_HOT, fmt.speed(fields.speed));
-        textC(dc, dc.getWidth()/2, LINE_B+74, Gfx.FONT_MEDIUM, fmt.vam(fields.climbRate30sec));
-        drawVamIcon(dc,dc.getWidth()/2+28,LINE_B+61);
+        textCC(dc, dc.getWidth()/2,LINE_B+3, Gfx.FONT_XTINY,  "Spd km/h");
+//        textC(dc, dc.getWidth()/2, LINE_B+34, Gfx.FONT_NUMBER_MILD,  fmt.speed(fields.speed));
+        textC(dc, dc.getWidth()/2, LINE_B+34, Gfx.FONT_NUMBER_MILD,  fmt.speed(fields.speed));
+        textC(dc, dc.getWidth()/2, LINE_B+66, Gfx.FONT_NUMBER_MEDIUM, fmt.number(fields.power3Sec));
+        textCC(dc, dc.getWidth()/2+40,LINE_B+57, Gfx.FONT_XTINY,  "W");
+        textCC(dc, dc.getWidth()/2+40,LINE_B+67, Gfx.FONT_XTINY,  "3s");
+//        textC(dc, dc.getWidth()/2, LINE_B+45, Gfx.FONT_NUMBER_MEDIUM, fmt.speed(fields.speed));
+//        textC(dc, dc.getWidth()/2, LINE_B+74, Gfx.FONT_MEDIUM, fmt.vam(fields.climbRate30sec));
+//        drawVamIcon(dc,dc.getWidth()/2+28,LINE_B+61);
 
         //RIGHT
 //        dc.setColor(Gfx.COLOR_BLUE, Gfx.COLOR_TRANSPARENT);
@@ -219,6 +246,13 @@ class JustRideView extends WatchUi.DataField {
 //        textAL(dc, dc.getWidth()-10,LINE_B+16, Gfx.FONT_XTINY,  "5s");
 //        drawGrade(dc,dc.getWidth()-13, LINE_B,fields.climbLsGrade10Sec);
 //        dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_TRANSPARENT);
+
+//        textRC(dc, dc.getWidth()-18, LINE_B+10, Gfx.FONT_SMALL,  fields.rearDerailleurSize);
+        textRC(dc, dc.getWidth()-22, LINE_B+14, Gfx.FONT_MEDIUM,  fmt.vam(fields.climbRate30sec));
+        drawVamIcon(dc,dc.getWidth()-10,LINE_B+3);
+//        textRC(dc, dc.getWidth()-3, LINE_B+5, Gfx.FONT_XTINY,  "GE");
+//        textRC(dc, dc.getWidth()-3, LINE_B+13, Gfx.FONT_XTINY,  "AR");
+
 
 
         textAL(dc, dc.getWidth()-10,LINE_B+34, Gfx.FONT_XTINY,  "%");
@@ -497,3 +531,4 @@ class JustRideView extends WatchUi.DataField {
 
     }
 }
+
