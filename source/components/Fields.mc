@@ -28,7 +28,8 @@ class Fields {
     var barometricAltitude;
     var frontDerailleurSize;
     var rearDerailleurSize;
-
+    var currentPower;
+    var power3Sec;
 
     var time;
     var pressure;
@@ -36,10 +37,21 @@ class Fields {
     var barometricRawAltitude;
     var rawAmbientPressure;
 
+    hidden var pwr3s=new[3]; // record 10 prior climbing rates
+    hidden var ready3sec=false; // set when we've got full arrays
+    hidden var nextLoc3s=0; // where we'll write the *next* pieces of data
+
+
 
     /* CONSTRUCTOR */
     function initialize() {
         climbInfo = new ClimbInfo();
+        ready3sec=false;
+        nextLoc3s=0;
+        var i;
+        for (i=0;i<3;i++){
+            pwr3s[i]=0; // 10000 means uninitialized
+        }
     }
 
     /* COMPUTE */
@@ -56,6 +68,8 @@ class Fields {
                 elapsedSecs = (elapsed.toLong() % 60).format("%02d");
             }
         }
+
+
 
         //Elevation and pressure
         seaPressure = info.meanSeaLevelPressure;
@@ -113,4 +127,35 @@ class Fields {
             return 0.0;
         }
 	}
+
+	function get3sPower(){
+	    var pwrSum = 0;
+	    var i;
+	    for (i=0;i<3;i++){
+              pwrSum+=pwr3s[i];
+        }
+        return pwrSum/3;
+	}
+
+
+
+	 function incLoc3s(){
+            ++nextLoc3s;
+            nextLoc3s = mod(nextLoc3s,3);
+            if (nextLoc3s == 0){
+                ready3sec=true; // arrays are fully populated
+            }
+        }
+
+     function mod(x,y){
+           return x%y;
+     }
+
+     function pushPwr(pwr){
+//     	    Sys.println("pwr:"+pwr);
+     	    if (pwr != null){
+     	        pwr3s[nextLoc3s] = currentPower;
+     	    }
+     	    incLoc3s();
+     	}
 }
