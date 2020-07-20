@@ -7,23 +7,23 @@ using Toybox.AntPlus as Ant;
 
 
      /*
-                -------------------------------     0
-           A   | Aleft                  Aright |  20
+          Line_0-------------------------------   0
+               | Aleft         |        Aright |
+       BOX A   |               |               |
                |           Amiddle             |
-               A ------------- VA -------------
-               | Btl       Btr |           Ctr |
-               |     Bmid      |      Cmid     |  70
-               | Bbl           |           Cbr |
-               B ------------------------------
+          Line_A ------------- VA -------------   66
+               | Btl       Btr             Ctr |
+       BOX B   |     Bmid             Cmid     |
+               | Bbl                       Cbr |
+          Line_B ------------------------------   132
                |                               |
-               |             Dmiddle           |  80
+       BOX C   |             Dmiddle           |
                |                               |
-               C ------------- VC -------------
+          Line_C ------------- VC -------------   198
                |               |               |
-               |      E        |      F        |  70
+       BOX D   |      E        |      F        |
                |               |               |
-               D ------------------------------
-               |              G                |   20
+               |               |               |
                 -------------------------------  264
 
             215x263
@@ -42,6 +42,7 @@ class JustRideView extends WatchUi.DataField {
     const BACKGROUND_COLOR = Gfx.COLOR_TRANSPARENT;
     const LINE_COLOR = Gfx.COLOR_BLUE;
 
+    const LINE_0 = 0;
     const LINE_A = 66;
     const LINE_B = 132;
     const LINE_C = 198;
@@ -122,7 +123,7 @@ class JustRideView extends WatchUi.DataField {
         dc.setColor(Gfx.COLOR_BLACK, BACKGROUND_COLOR);
         dc.clear();
 
-        drawBottomLeftBoxs(dc);
+        drawBoxes(dc);
         //Upper Bar
 //        drawBattery(dc);
 //        drawTime(dc,10,2);
@@ -151,9 +152,9 @@ class JustRideView extends WatchUi.DataField {
         dc.drawLine(dc.getWidth()/2, LINE_C, dc.getWidth()/2, LINE_D);
     }
 
-    function drawBottomLeftBoxs(dc){
-        drawTopLeftBox(dc);
-        drawTopRightBox(dc);
+    function drawBoxes(dc){
+        drawBoxA_Left(dc);
+        drawBoxA_Right(dc);
         drawMainBox(dc);
         drawBottomLeftBox(dc);
         drawBottomRightBox(dc);
@@ -161,32 +162,36 @@ class JustRideView extends WatchUi.DataField {
     }
 
     /* BOX B */
-    function drawTopLeftBox(dc){
+    function drawBoxA_Left(dc){
 
-        var topLeftLabel =  "Distance (km)";
-        var middleField = fmt.distance(lapInfo.elapsedDistance());
-        var midRightLabel =  "Lap";
+        var lapElapsedDistance = lapInfo.elapsedDistance();
 
-        var botField = fmt.timeOptHour(lapInfo.lapElapsedTime());
-        var botLabel = "Avg";
+        //LAP Distance
+        textAR(dc, (dc.getWidth()/2)-4, LINE_0+10, Gfx.FONT_XTINY,  "Km");
+        //Variable size depenging on the lapElapsedDistance
+        if(lapElapsedDistance == null || lapElapsedDistance < 1000){
+            textC(dc, dc.getWidth()/4, LINE_0+25, Gfx.FONT_NUMBER_MEDIUM, fmt.distance(lapElapsedDistance));
+        } else {
+            textC(dc, dc.getWidth()/4, LINE_0+25, Gfx.FONT_NUMBER_MILD, fmt.distance(lapElapsedDistance));
+        }
 
+        //LAP number
+//        textAL(dc, (dc.getWidth()/2)-6,28 , Gfx.FONT_XTINY,  "Lap");
+//        getLapString(dc,(dc.getWidth()/2),52);
 
-        //top Left
-        textAL(dc, 5, LINE_A+2, Gfx.FONT_XTINY,  topLeftLabel);
-        //middle
-        textC(dc, dc.getWidth()/4, LINE_A+35, Gfx.FONT_NUMBER_MILD, middleField);
-        textAL(dc, (dc.getWidth()/2)-6,28 , Gfx.FONT_XTINY,  midRightLabel);
-        getLapString(dc,(dc.getWidth()/2),52);
-        textC(dc,  dc.getWidth()/4, LINE_A+60 , Gfx.FONT_SMALL, botField );
-
+        //LAP ElapsedTime
+        textAR(dc, (dc.getWidth()/2)-6, LINE_0+45, Gfx.FONT_XTINY,  "ET");
+        textC(dc, dc.getWidth()/4, LINE_0+50, Gfx.FONT_MEDIUM, fmt.timeOptHour(lapInfo.lapElapsedTime()) );
         dc.setColor(Gfx.COLOR_BLUE, Gfx.COLOR_TRANSPARENT);
-        textAL(dc, (dc.getWidth()/2)-6,LINE_A+47 , Gfx.FONT_XTINY,  "LAP");
-        textAL(dc, (dc.getWidth()/2)-10,LINE_A+57 , Gfx.FONT_XTINY,  "DATA");
+
+        //Info labels (Lap , Data)
+//        textAL(dc, (dc.getWidth()/2)-6,LINE_0+47 , Gfx.FONT_XTINY,  "LAP");
+//        textAL(dc, (dc.getWidth()/2)-10,LINE_0+57 , Gfx.FONT_XTINY,  "DATA");
         dc.setColor(Gfx.COLOR_BLACK, BACKGROUND_COLOR);
     }
 
     /* BOX C */
-    function drawTopRightBox(dc){
+    function drawBoxA_Right(dc){
         //top Left
         textAR(dc, dc.getWidth()-2, LINE_A+2, Gfx.FONT_XTINY,  "Climb (m)");
         textC(dc, (3*dc.getWidth()/4)-3, LINE_A+35, Gfx.FONT_NUMBER_MILD,  fmt.elevation(lapInfo.lapElevation()));
