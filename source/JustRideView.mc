@@ -155,7 +155,8 @@ class JustRideView extends WatchUi.DataField {
     function drawBoxes(dc){
         drawBoxA_Left(dc);
         drawBoxA_Right(dc);
-        drawMainBox(dc);
+        drawBoxB(dc);
+        drawBoxC(dc);
         drawBottomLeftBox(dc);
         drawBottomRightBox(dc);
         drawFootertBox(dc);
@@ -205,78 +206,83 @@ class JustRideView extends WatchUi.DataField {
     }
 
 
-    /* BOX D */
-    function drawMainBox(dc){
+    /* BOX B */
+    function drawBoxB(dc){
 
-var pedalPowerPercent = Ant.PedalPowerBalance.pedalPowerPercent;
-var rightPedalIndicator = Ant.PedalPowerBalance.rightPedalIndicator;
+        var pedalPowerPercent = Ant.PedalPowerBalance.pedalPowerPercent;
+        var rightPedalIndicator = Ant.PedalPowerBalance.rightPedalIndicator;
 
+        //LAP AVG Speed
+        textLC(dc, 6, LINE_A+35, Gfx.FONT_SMALL,  "____");
+        textLC(dc, 6, LINE_A+50, Gfx.FONT_SMALL,  fmt.speed(lapInfo.lapAvgSpeed()));
+        textAL(dc, 35,LINE_A+45, Gfx.FONT_XTINY,  "Km/h");
 
-        //LEFT
-        textAL(dc, 40,LINE_B+3, Gfx.FONT_XTINY,  "Avg");
-        textLC(dc, 7, LINE_B+13, Gfx.FONT_SMALL,  fmt.speed(lapInfo.lapAvgSpeed()));
-//        textLC(dc, 10, LINE_B+10, Gfx.FONT_SMALL,  fmt.number(lapInfo.lapAvgPower()));
-
-        textAL(dc, 40,LINE_B+28, Gfx.FONT_XTINY,  "Avg");
-        textAL(dc, 40,LINE_B+38, Gfx.FONT_XTINY,  "Pwr");
-//        textAL(dc, 44,LINE_B+28, Gfx.FONT_XTINY,  "%");
-//        textAL(dc, 44,LINE_B+37, Gfx.FONT_XTINY,  "Bal");
-//        textLC(dc, 6, LINE_B+40, Gfx.FONT_SMALL,  fmt.number(pedalPowerPercent)+"/"+fmt.number(rightPedalIndicator));
-
-        textLC(dc, 6, LINE_B+40, Gfx.FONT_SMALL,  fmt.number(lapInfo.lapAvgPower()));
-//        textLC(dc, 10, LINE_B+10, Gfx.FONT_SMALL,  fmt.speed(lapInfo.lapAvgSpeed()));
+//        textLC(dc, 10, LINE_A+10, Gfx.FONT_SMALL,  fmt.number(lapInfo.lapAvgPower()));
+//        textLC(dc, 10, LINE_A+10, Gfx.FONT_SMALL,  fmt.speed(lapInfo.lapAvgSpeed()));
 
 
         //left bottom
-        //textAL(dc, 6,LINE_B+70, Gfx.FONT_XTINY, fields.frontDerailleurSize);
-//        textAL(dc, 25,LINE_B+65, Gfx.FONT_XTINY, "PZone");
-//        textAL(dc, 6,LINE_B+65, Gfx.FONT_SMALL, fmt.vam(fields.climbRate30sec));
-//        drawVamIcon(dc,52,LINE_B+61);
-        textAL(dc, 40, LINE_B+68, Gfx.FONT_XTINY,  "R.D.");
-        textAL(dc, 13,LINE_B+65, Gfx.FONT_SMALL, fields.rearDerailleurSize);
+        //textAL(dc, 6,LINE_A+70, Gfx.FONT_XTINY, fields.frontDerailleurSize);
+//        textAL(dc, 25,LINE_A+65, Gfx.FONT_XTINY, "PZone");
+//        textAL(dc, 6,LINE_A+65, Gfx.FONT_SMALL, fmt.vam(fields.climbRate30sec));
+//        drawVamIcon(dc,52,LINE_A+61);
+        textAL(dc, 6, LINE_A+2, Gfx.FONT_XTINY,  "Gear");
+        textAL(dc, 6,LINE_A+13, Gfx.FONT_MEDIUM, fields.rearDerailleurSize);
 
-//        textLC(dc, 6, LINE_B+45, Gfx.FONT_SMALL,  fmt.speed(lapInfo.lapAvgSpeed()));
+//        textLC(dc, 6, LINE_A+45, Gfx.FONT_SMALL,  fmt.speed(lapInfo.lapAvgSpeed()));
 
         //CENTRAL
-        textCC(dc, dc.getWidth()/2,LINE_B+3, Gfx.FONT_XTINY,  "Spd km/h");
-//        textC(dc, dc.getWidth()/2, LINE_B+34, Gfx.FONT_NUMBER_MILD,  fmt.speed(fields.speed));
-        textC(dc, dc.getWidth()/2, LINE_B+34, Gfx.FONT_NUMBER_MILD,  fmt.speed(fields.speed));
-        textC(dc, dc.getWidth()/2, LINE_B+66, Gfx.FONT_NUMBER_MEDIUM, fmt.number(fields.power3Sec));
-        textCC(dc, dc.getWidth()/2+40,LINE_B+57, Gfx.FONT_XTINY,  "W");
-        textCC(dc, dc.getWidth()/2+40,LINE_B+67, Gfx.FONT_XTINY,  "3s");
-//        textC(dc, dc.getWidth()/2, LINE_B+45, Gfx.FONT_NUMBER_MEDIUM, fmt.speed(fields.speed));
-//        textC(dc, dc.getWidth()/2, LINE_B+74, Gfx.FONT_MEDIUM, fmt.vam(fields.climbRate30sec));
-//        drawVamIcon(dc,dc.getWidth()/2+28,LINE_B+61);
+//        textCC(dc, dc.getWidth()/2,LINE_A+3, Gfx.FONT_XTINY,  "Spd km/h");
+//        textC(dc, dc.getWidth()/2, LINE_A+34, Gfx.FONT_NUMBER_MILD,  fmt.speed(fields.speed));
+        textAL(dc, (dc.getWidth()/2)+35,LINE_A+13, Gfx.FONT_XTINY,  "Km");
+        textAL(dc, (dc.getWidth()/2)+35,LINE_A+23, Gfx.FONT_XTINY,  "h");
+        textC(dc, dc.getWidth()/2, LINE_A+24, Gfx.FONT_NUMBER_MEDIUM,  fmt.speed(fields.speed));
+
+//        textC(dc, dc.getWidth()/2, LINE_A+45, Gfx.FONT_NUMBER_MEDIUM, fmt.speed(fields.speed));
+//        textC(dc, dc.getWidth()/2, LINE_A+74, Gfx.FONT_MEDIUM, fmt.vam(fields.climbRate30sec));
+//        drawVamIcon(dc,dc.getWidth()/2+28,LINE_A+61);
 
         //RIGHT
 //        dc.setColor(Gfx.COLOR_BLUE, Gfx.COLOR_TRANSPARENT);
 //        showGradeIcon(dc,fields.climbLsGrade5Sec);
-//        textAL(dc, dc.getWidth()-10,LINE_B+6, Gfx.FONT_XTINY,  "%");
-//        textAL(dc, dc.getWidth()-10,LINE_B+16, Gfx.FONT_XTINY,  "5s");
-//        drawGrade(dc,dc.getWidth()-13, LINE_B,fields.climbLsGrade10Sec);
+//        textAL(dc, dc.getWidth()-10,LINE_A+6, Gfx.FONT_XTINY,  "%");
+//        textAL(dc, dc.getWidth()-10,LINE_A+16, Gfx.FONT_XTINY,  "5s");
+//        drawGrade(dc,dc.getWidth()-13, LINE_A,fields.climbLsGrade10Sec);
 //        dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_TRANSPARENT);
 
-//        textRC(dc, dc.getWidth()-18, LINE_B+10, Gfx.FONT_SMALL,  fields.rearDerailleurSize);
-        textRC(dc, dc.getWidth()-22, LINE_B+14, Gfx.FONT_MEDIUM,  fmt.vam(fields.climbRate30sec));
-        drawVamIcon(dc,dc.getWidth()-10,LINE_B+3);
-//        textRC(dc, dc.getWidth()-3, LINE_B+5, Gfx.FONT_XTINY,  "GE");
-//        textRC(dc, dc.getWidth()-3, LINE_B+13, Gfx.FONT_XTINY,  "AR");
+//        textRC(dc, dc.getWidth()-18, LINE_A+10, Gfx.FONT_SMALL,  fields.rearDerailleurSize);
+        textCC(dc, dc.getWidth()/2, LINE_A+44, Gfx.FONT_MEDIUM,  fmt.vam(fields.climbRate30sec));
+        drawVamIcon(dc,(dc.getWidth()/2)+20,LINE_A+44);
+//        textRC(dc, dc.getWidth()-3, LINE_A+5, Gfx.FONT_XTINY,  "GxE");
+//        textRC(dc, dc.getWidth()-3, LINE_A+13, Gfx.FONT_XTINY,  "AR");
 
 
 
-        textAL(dc, dc.getWidth()-10,LINE_B+34, Gfx.FONT_XTINY,  "%");
-        textAL(dc, dc.getWidth()-10,LINE_B+44, Gfx.FONT_XTINY,  "5s");
+        textAL(dc, dc.getWidth()-10,LINE_A+16, Gfx.FONT_XTINY,  "%");
+        textAL(dc, dc.getWidth()-10,LINE_A+26, Gfx.FONT_XTINY,  "5s");
 
-        drawGrade(dc,dc.getWidth()-13, LINE_B+28,fields.climbLsGrade5Sec);
+        drawGrade(dc,dc.getWidth()-13, LINE_A+10,fields.climbLsGrade5Sec);
 
-        textRC(dc, dc.getWidth()-14, LINE_B+74, Gfx.FONT_SMALL,  fmt.elevation(fields.altitude));
-        textAL(dc, dc.getWidth()-10, LINE_B+70, Gfx.FONT_XTINY,  "m");
-        textAL(dc, dc.getWidth()-10 , LINE_B+64, Gfx.FONT_XTINY,  "^");
+        textRC(dc, dc.getWidth()-14, LINE_A+54, Gfx.FONT_SMALL,  fmt.elevation(fields.altitude));
+        textAL(dc, dc.getWidth()-10, LINE_A+45, Gfx.FONT_XTINY,  "m");
+        textAL(dc, dc.getWidth()-10 , LINE_A+40, Gfx.FONT_XTINY,  "^");
 
-//        textAR(dc, (dc.getWidth()/2)+10, LINE_B+64, Gfx.FONT_SMALL,   fields.avgSpeed);
-//        textAL(dc, 30, LINE_B+64, Gfx.FONT_SMALL,   fields.avgSpeed);
-//        textAL(dc, (dc.getWidth()/2)+25, LINE_B+69, Gfx.FONT_XTINY,  "m/h");
-//        textAR(dc, (dc.getWidth()/2)+23, LINE_B+62, ARROW_FONT,  "K");
+//        textAR(dc, (dc.getWidth()/2)+10, LINE_A+64, Gfx.FONT_SMALL,   fields.avgSpeed);
+//        textAL(dc, 30, LINE_A+64, Gfx.FONT_SMALL,   fields.avgSpeed);
+//        textAL(dc, (dc.getWidth()/2)+25, LINE_A+69, Gfx.FONT_XTINY,  "m/h");
+//        textAR(dc, (dc.getWidth()/2)+23, LINE_A+62, ARROW_FONT,  "K");
+    }
+
+
+    function drawBoxC(dc){
+            textC(dc, dc.getWidth()/2, LINE_B+46, Gfx.FONT_NUMBER_MEDIUM, fmt.number(fields.power3Sec));
+            textCC(dc, dc.getWidth()/2+40,LINE_B+37, Gfx.FONT_XTINY,  "W");
+            textCC(dc, dc.getWidth()/2+40,LINE_B+47, Gfx.FONT_XTINY,  "3s");
+
+            textLC(dc, 6, LINE_B+35, Gfx.FONT_SMALL,  "____");
+            textLC(dc, 6, LINE_B+50, Gfx.FONT_SMALL,  fmt.number(lapInfo.lapAvgPower()));
+            textAL(dc, 35,LINE_B+45, Gfx.FONT_XTINY,  "W");
+
     }
 
     function drawBottomLeftBox(dc){
@@ -522,8 +528,9 @@ var rightPedalIndicator = Ant.PedalPowerBalance.rightPedalIndicator;
 
     function drawVamIcon(dc,x,y){
         textAR(dc, x-1, y, ARROW_FONT,  "K");
-        textAL(dc, x, y, Gfx.FONT_XTINY,  "m");
-        textAL(dc, x+2, y+10,  Gfx.FONT_XTINY,  "h");
+//        textAL(dc, x, y, Gfx.FONT_XTINY,  "m");
+//        textAL(dc, x, y+9,  Gfx.FONT_XTINY,  "h");
+
     }
 
 
