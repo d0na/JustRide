@@ -31,4 +31,3 @@ All you'll need to get started is edit the ```properties.mk``` file. Here's a de
 
 ### How to use?
 To execute the **run** target, run ```make run``` from the home folder of your app
-![JustRide-Dialog](https://user-images.githubusercontent.com/5610407/111044884-885ad580-844b-11eb-9537-5ee2aa2192ff.png)
