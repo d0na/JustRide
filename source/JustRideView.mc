@@ -168,7 +168,8 @@ class JustRideView extends WatchUi.DataField {
         var lapElapsedDistance = lapInfo.elapsedDistance();
 
         //LAP Distance
-        textAR(dc, (dc.getWidth()/2)-4, LINE_0+15, Gfx.FONT_XTINY,  "Km");
+        textAR(dc, (dc.getWidth()/2)-3, LINE_0+15, Gfx.FONT_XTINY,  "K");
+        textAR(dc, (dc.getWidth()/2)-2, LINE_0+23, Gfx.FONT_XTINY,  "m");
         //Variable size depenging on the lapElapsedDistance
         if(lapElapsedDistance == null || lapElapsedDistance < 1000){
             textC(dc, dc.getWidth()/4, LINE_0+25, Gfx.FONT_NUMBER_MEDIUM, fmt.distance(lapElapsedDistance));
@@ -181,8 +182,9 @@ class JustRideView extends WatchUi.DataField {
 //        getLapString(dc,(dc.getWidth()/2),52);
 
         //LAP ElapsedTime
-        textAR(dc, (dc.getWidth()/2)-6, LINE_0+45, Gfx.FONT_XTINY,  "ET");
-        textC(dc, dc.getWidth()/4, LINE_0+50, Gfx.FONT_MEDIUM, fmt.timeOptHour(lapInfo.lapElapsedTime()) );
+        textAR(dc, (dc.getWidth()/2)-3, LINE_0+45, Gfx.FONT_XTINY,  "E");
+        textAR(dc, (dc.getWidth()/2)-3, LINE_0+53, Gfx.FONT_XTINY,  "T");
+        textC(dc, dc.getWidth()/4, LINE_0+52, Gfx.FONT_MEDIUM, fmt.timeOptHour(lapInfo.lapElapsedTime()) );
         dc.setColor(Gfx.COLOR_BLUE, Gfx.COLOR_TRANSPARENT);
 
         //Info labels (Lap , Data)
@@ -198,7 +200,7 @@ class JustRideView extends WatchUi.DataField {
         textC(dc, (3*dc.getWidth()/4)-3, LINE_0+25, Gfx.FONT_NUMBER_MILD,  fmt.elevation(lapInfo.lapElevation()));
         //VAM
         textAR(dc, dc.getWidth()-4,47 , Gfx.FONT_XTINY,  "VAM");
-        textC(dc,  (3*dc.getWidth()/4), LINE_0+50 , Gfx.FONT_MEDIUM, fmt.vam(lapInfo.lapVam()));
+        textC(dc,  (3*dc.getWidth()/4), LINE_0+52 , Gfx.FONT_MEDIUM, fmt.vam(lapInfo.lapVam()));
 
         //To insert LAP %
 //        textAL(dc,  (dc.getWidth()/2)+2, LINE_0+39 , Gfx.FONT_MEDIUM, 12);
@@ -209,80 +211,96 @@ class JustRideView extends WatchUi.DataField {
     /* BOX B */
     function drawBoxB(dc){
 
+        var refLine = LINE_B;
+
         var pedalPowerPercent = Ant.PedalPowerBalance.pedalPowerPercent;
         var rightPedalIndicator = Ant.PedalPowerBalance.rightPedalIndicator;
 
         //LAP AVG Speed
-        textLC(dc, 6, LINE_A+35, Gfx.FONT_SMALL,  "____");
-        textLC(dc, 6, LINE_A+50, Gfx.FONT_SMALL,  fmt.speed(lapInfo.lapAvgSpeed()));
-        textAL(dc, 35,LINE_A+45, Gfx.FONT_XTINY,  "Km/h");
+        textLC(dc, 6, refLine+35, Gfx.FONT_SMALL,  "____");
+        textLC(dc, 6, refLine+50, Gfx.FONT_SMALL,  fmt.speed(lapInfo.lapAvgSpeed()));
+        textAL(dc, 40,refLine+45, Gfx.FONT_XTINY,  "Km/h");
 
-//        textLC(dc, 10, LINE_A+10, Gfx.FONT_SMALL,  fmt.number(lapInfo.lapAvgPower()));
-//        textLC(dc, 10, LINE_A+10, Gfx.FONT_SMALL,  fmt.speed(lapInfo.lapAvgSpeed()));
+//        textLC(dc, 10, refLine+10, Gfx.FONT_SMALL,  fmt.number(lapInfo.lapAvgPower()));
+//        textLC(dc, 10, refLine+10, Gfx.FONT_SMALL,  fmt.speed(lapInfo.lapAvgSpeed()));
 
 
         //left bottom
-        //textAL(dc, 6,LINE_A+70, Gfx.FONT_XTINY, fields.frontDerailleurSize);
-//        textAL(dc, 25,LINE_A+65, Gfx.FONT_XTINY, "PZone");
-//        textAL(dc, 6,LINE_A+65, Gfx.FONT_SMALL, fmt.vam(fields.climbRate30sec));
-//        drawVamIcon(dc,52,LINE_A+61);
-        textAL(dc, 6, LINE_A+2, Gfx.FONT_XTINY,  "Gear");
-        textAL(dc, 6,LINE_A+13, Gfx.FONT_MEDIUM, fields.rearDerailleurSize);
+        //textAL(dc, 6,refLine+70, Gfx.FONT_XTINY, fields.frontDerailleurSize);
+//        textAL(dc, 25,refLine+65, Gfx.FONT_XTINY, "PZone");
+//        textAL(dc, 6,refLine+65, Gfx.FONT_SMALL, fmt.vam(fields.climbRate30sec));
+//        drawVamIcon(dc,52,refLine+61);
+        textAL(dc, 6, refLine+2, Gfx.FONT_XTINY,  "Gear");
+        textAL(dc, 6,refLine+13, Gfx.FONT_MEDIUM, fields.rearDerailleurSize);
 
-//        textLC(dc, 6, LINE_A+45, Gfx.FONT_SMALL,  fmt.speed(lapInfo.lapAvgSpeed()));
+//        textLC(dc, 6, refLine+45, Gfx.FONT_SMALL,  fmt.speed(lapInfo.lapAvgSpeed()));
 
         //CENTRAL
-//        textCC(dc, dc.getWidth()/2,LINE_A+3, Gfx.FONT_XTINY,  "Spd km/h");
-//        textC(dc, dc.getWidth()/2, LINE_A+34, Gfx.FONT_NUMBER_MILD,  fmt.speed(fields.speed));
-        textAL(dc, (dc.getWidth()/2)+35,LINE_A+13, Gfx.FONT_XTINY,  "Km");
-        textAL(dc, (dc.getWidth()/2)+35,LINE_A+23, Gfx.FONT_XTINY,  "h");
-        textC(dc, dc.getWidth()/2, LINE_A+24, Gfx.FONT_NUMBER_MEDIUM,  fmt.speed(fields.speed));
+//        textCC(dc, dc.getWidth()/2,refLine+3, Gfx.FONT_XTINY,  "Spd km/h");
+//        textC(dc, dc.getWidth()/2, refLine+34, Gfx.FONT_NUMBER_MILD,  fmt.speed(fields.speed));
+        textAL(dc, (dc.getWidth()/2)+35,refLine+13, Gfx.FONT_XTINY,  "Km");
+        textAL(dc, (dc.getWidth()/2)+35,refLine+23, Gfx.FONT_XTINY,  "h");
+        textC(dc, dc.getWidth()/2, refLine+24, Gfx.FONT_NUMBER_MEDIUM,  fmt.speed(fields.speed));
 
-//        textC(dc, dc.getWidth()/2, LINE_A+45, Gfx.FONT_NUMBER_MEDIUM, fmt.speed(fields.speed));
-//        textC(dc, dc.getWidth()/2, LINE_A+74, Gfx.FONT_MEDIUM, fmt.vam(fields.climbRate30sec));
-//        drawVamIcon(dc,dc.getWidth()/2+28,LINE_A+61);
+//        textC(dc, dc.getWidth()/2, refLine+45, Gfx.FONT_NUMBER_MEDIUM, fmt.speed(fields.speed));
+//        textC(dc, dc.getWidth()/2, refLine+74, Gfx.FONT_MEDIUM, fmt.vam(fields.climbRate30sec));
+//        drawVamIcon(dc,dc.getWidth()/2+28,refLine+61);
 
         //RIGHT
 //        dc.setColor(Gfx.COLOR_BLUE, Gfx.COLOR_TRANSPARENT);
 //        showGradeIcon(dc,fields.climbLsGrade5Sec);
-//        textAL(dc, dc.getWidth()-10,LINE_A+6, Gfx.FONT_XTINY,  "%");
-//        textAL(dc, dc.getWidth()-10,LINE_A+16, Gfx.FONT_XTINY,  "5s");
-//        drawGrade(dc,dc.getWidth()-13, LINE_A,fields.climbLsGrade10Sec);
+//        textAL(dc, dc.getWidth()-10,refLine+6, Gfx.FONT_XTINY,  "%");
+//        textAL(dc, dc.getWidth()-10,refLine+16, Gfx.FONT_XTINY,  "5s");
+//        drawGrade(dc,dc.getWidth()-13, refLine,fields.climbLsGrade10Sec);
 //        dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_TRANSPARENT);
 
-//        textRC(dc, dc.getWidth()-18, LINE_A+10, Gfx.FONT_SMALL,  fields.rearDerailleurSize);
-        textCC(dc, dc.getWidth()/2, LINE_A+44, Gfx.FONT_MEDIUM,  fmt.vam(fields.climbRate30sec));
-        drawVamIcon(dc,(dc.getWidth()/2)+20,LINE_A+44);
-//        textRC(dc, dc.getWidth()-3, LINE_A+5, Gfx.FONT_XTINY,  "GxE");
-//        textRC(dc, dc.getWidth()-3, LINE_A+13, Gfx.FONT_XTINY,  "AR");
+//        textRC(dc, dc.getWidth()-18, refLine+10, Gfx.FONT_SMALL,  fields.rearDerailleurSize);
+        textCC(dc, dc.getWidth()/2, refLine+44, Gfx.FONT_MEDIUM,  fmt.vam(fields.climbRate30sec));
+        drawVamIcon(dc,(dc.getWidth()/2)+20,refLine+44);
+//        textRC(dc, dc.getWidth()-3, refLine+5, Gfx.FONT_XTINY,  "GxE");
+//        textRC(dc, dc.getWidth()-3, refLine+13, Gfx.FONT_XTINY,  "AR");
 
 
 
-        textAL(dc, dc.getWidth()-10,LINE_A+16, Gfx.FONT_XTINY,  "%");
-        textAL(dc, dc.getWidth()-10,LINE_A+26, Gfx.FONT_XTINY,  "5s");
+        textAL(dc, dc.getWidth()-10,refLine+16, Gfx.FONT_XTINY,  "%");
+        textAL(dc, dc.getWidth()-10,refLine+26, Gfx.FONT_XTINY,  "5s");
 
-        drawGrade(dc,dc.getWidth()-13, LINE_A+10,fields.climbLsGrade5Sec);
+        drawGrade(dc,dc.getWidth()-13, refLine+10,fields.climbLsGrade5Sec);
 
-        textRC(dc, dc.getWidth()-14, LINE_A+54, Gfx.FONT_SMALL,  fmt.elevation(fields.altitude));
-        textAL(dc, dc.getWidth()-10, LINE_A+45, Gfx.FONT_XTINY,  "m");
-        textAL(dc, dc.getWidth()-10 , LINE_A+40, Gfx.FONT_XTINY,  "^");
+        textRC(dc, dc.getWidth()-14, refLine+54, Gfx.FONT_SMALL,  fmt.elevation(fields.altitude));
+        textAL(dc, dc.getWidth()-10, refLine+45, Gfx.FONT_XTINY,  "m");
+        textAL(dc, dc.getWidth()-10 , refLine+40, Gfx.FONT_XTINY,  "^");
 
-//        textAR(dc, (dc.getWidth()/2)+10, LINE_A+64, Gfx.FONT_SMALL,   fields.avgSpeed);
-//        textAL(dc, 30, LINE_A+64, Gfx.FONT_SMALL,   fields.avgSpeed);
-//        textAL(dc, (dc.getWidth()/2)+25, LINE_A+69, Gfx.FONT_XTINY,  "m/h");
-//        textAR(dc, (dc.getWidth()/2)+23, LINE_A+62, ARROW_FONT,  "K");
+//        textAR(dc, (dc.getWidth()/2)+10, refLine+64, Gfx.FONT_SMALL,   fields.avgSpeed);
+//        textAL(dc, 30, refLine+64, Gfx.FONT_SMALL,   fields.avgSpeed);
+//        textAL(dc, (dc.getWidth()/2)+25, refLine+69, Gfx.FONT_XTINY,  "m/h");
+//        textAR(dc, (dc.getWidth()/2)+23, refLine+62, ARROW_FONT,  "K");
     }
 
 
     function drawBoxC(dc){
-            textC(dc, dc.getWidth()/2, LINE_B+46, Gfx.FONT_NUMBER_MEDIUM, fmt.number(fields.power3Sec));
-            textCC(dc, dc.getWidth()/2+40,LINE_B+37, Gfx.FONT_XTINY,  "W");
-            textCC(dc, dc.getWidth()/2+40,LINE_B+47, Gfx.FONT_XTINY,  "3s");
 
-            textLC(dc, 6, LINE_B+35, Gfx.FONT_SMALL,  "____");
-            textLC(dc, 6, LINE_B+50, Gfx.FONT_SMALL,  fmt.number(lapInfo.lapAvgPower()));
-            textAL(dc, 35,LINE_B+45, Gfx.FONT_XTINY,  "W");
+            var refLine = LINE_A;
 
+            drawPowerChart(dc);
+
+            textC(dc, dc.getWidth()/2, refLine+46, Gfx.FONT_NUMBER_HOT, fmt.number(fields.power3Sec));
+            textCC(dc, dc.getWidth()/2+40,refLine+37, Gfx.FONT_XTINY,  "W");
+            textCC(dc, dc.getWidth()/2+40,refLine+47, Gfx.FONT_XTINY,  "3s");
+
+            textLC(dc, 6, refLine+35, Gfx.FONT_SMALL,  "____");
+            textLC(dc, 6, refLine+50, Gfx.FONT_SMALL,  fmt.number(lapInfo.lapAvgPower()));
+            textAL(dc, 35,refLine+47, Gfx.FONT_XTINY,  "W");
+
+            var powerZone =  getPowerZone(fields.power3Sec,274);
+
+            textLC(dc, dc.getWidth()-25, refLine+50, Gfx.FONT_SMALL,  fmt.number2d(powerZone));
+            textAL(dc, dc.getWidth()-32,refLine+47, Gfx.FONT_XTINY,  "Z");
+
+            if(powerZone != null && powerZone > 0){
+                var zoneArrow = ((powerZone-1)/7)*dc.getWidth();
+                drawVamIcon(dc,zoneArrow+9,refLine+6);
+            }
     }
 
     function drawBottomLeftBox(dc){
@@ -293,11 +311,11 @@ class JustRideView extends WatchUi.DataField {
         showBlinkingHeart(dc,fields.heartRate);
         //middle
         textC(dc, dc.getWidth()/4, LINE_C+40, Gfx.FONT_NUMBER_MILD, fmt.simple(fields.heartRate));
-        textAR(dc, (dc.getWidth()/2)-30,LINE_C+59 , Gfx.FONT_XTINY,  "Max");
+        textAR(dc, (dc.getWidth()/2)-30,LINE_C+57 , Gfx.FONT_XTINY,  "Max");
         doHrBackground(dc,fields.heartRate);
         showHeartRateZone(dc,fields.heartRate);
 
-        textAR(dc, (dc.getWidth()/2)-3,LINE_C+54 , Gfx.FONT_SMALL, fmt.simple(fields.maxHeartRate));
+        textAR(dc, (dc.getWidth()/2)-3,LINE_C+52 , Gfx.FONT_SMALL, fmt.simple(fields.maxHeartRate));
     }
 
     function drawBottomRightBox(dc){
@@ -306,8 +324,8 @@ class JustRideView extends WatchUi.DataField {
         textAR(dc, dc.getWidth()-2, LINE_C+2, Gfx.FONT_XTINY,  "RPM");
         doCadenceBackground(dc,fields.rpm);
         textC(dc, 3*dc.getWidth()/4, LINE_C+40, Gfx.FONT_NUMBER_MILD, fmt.simple(fields.rpm));
-        textAR(dc, dc.getWidth()-30,LINE_C+59 , Gfx.FONT_XTINY,  "Avg");
-        textAR(dc, dc.getWidth()-5, LINE_C+54 , Gfx.FONT_SMALL, fmt.simple(lapInfo.lapAvgCadence())) ;
+        textAR(dc, dc.getWidth()-30,LINE_C+57 , Gfx.FONT_XTINY,  "Avg");
+        textAR(dc, dc.getWidth()-5, LINE_C+52 , Gfx.FONT_SMALL, fmt.simple(lapInfo.lapAvgCadence())) ;
     }
 
     function drawFootertBox(dc){
@@ -403,6 +421,80 @@ class JustRideView extends WatchUi.DataField {
         dc.fillRectangle(dc.getWidth()/2, LINE_C, getCadenceValueRange(cadence), 15);
         dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_TRANSPARENT);
     }
+
+    function getPowerZone(power,ftp){
+
+        if (power == null) {
+            return ;
+        }
+
+        //Zone 7 > 150%
+        if(power > ftp*1.5){
+            var range = (ftp*2) - (ftp*1.5);
+            var powern = power -range;
+            return 7+(powern/(ftp*1.5));
+                    //Zone 6 > 120%
+        } else if (power > (ftp*1.2)){
+
+            var range = (ftp*1.5) - (ftp*1.2);
+            var powern = power -range;
+            return 6+(powern/(ftp*1.2));             //Zone 5 > 105%
+
+        } else if (power > (ftp*1.05)){
+
+           var range = (ftp*1.2) - (ftp*1.05);
+            var powern = power -range;
+            return 5+(powern/(ftp*1.05));
+
+        //Zone 4 > 90%
+
+        } else if (power > (ftp*0.9)){
+
+           var range = (ftp*1.05) - (ftp*0.9);
+            var powern = power -(ftp*0.9);
+            return 4+(powern/range);
+
+        //Zone 3 > 75%
+        } else if (power > (ftp*0.75)){
+
+            var range = (ftp*0.9) - (ftp*0.75);
+            var powern = power -(ftp*0.75);
+            return 3+(powern/range);
+
+        //Zone 2 > 55%
+        } else if (power > (ftp*0.55)){
+
+            var range = (ftp*0.75) - (ftp*0.55);
+            var powern = power - (ftp*0.55);
+
+            return 2+(powern/range);
+
+        //Zone 1 > 0%
+        } else if (power > 0){
+            return 1+(power.toFloat()/(ftp*0.55));
+        }
+    }
+
+
+    const BLOCK = 29;
+
+    function drawPowerChart(dc){
+        //width = 215 => 215/7 = 30
+        drawRectangle(dc,Gfx.COLOR_LT_GRAY,0,BLOCK);
+        drawRectangle(dc,Gfx.COLOR_BLUE,1*BLOCK,BLOCK);
+        drawRectangle(dc,Gfx.COLOR_GREEN,2*BLOCK,BLOCK);
+        drawRectangle(dc,Gfx.COLOR_YELLOW,3*BLOCK,BLOCK);
+        drawRectangle(dc,Gfx.COLOR_ORANGE,4*BLOCK,BLOCK);
+        drawRectangle(dc,Gfx.COLOR_RED,5*BLOCK,BLOCK);
+        drawRectangle(dc,Gfx.COLOR_PURPLE,6*BLOCK,BLOCK);
+        dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_TRANSPARENT);
+    }
+
+    function drawRectangle(dc,color,startPoint,lenght){
+            dc.setColor(color, Gfx.COLOR_TRANSPARENT);
+            dc.fillRectangle(startPoint, LINE_A, lenght, 15);
+    }
+
 
     function doHrBackground(dc, hr) {
         if (hr == null) {
