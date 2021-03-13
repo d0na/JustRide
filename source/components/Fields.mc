@@ -17,6 +17,8 @@ class Fields {
     var elapsedTime;
     var totalAscent;
     var altitude;
+    var averagePower;
+    var trainingEffect;
     var speed;
     var avgSpeed;
     var climbRate10sec;
@@ -80,6 +82,7 @@ class Fields {
         barometricAltitude = getBarometricAltitude(info.ambientPressure);
         barometricRawAltitude = getBarometricAltitude(info.rawAmbientPressure);
 
+
         //Time
         time =  Sys.getClockTime();
         elapsedTime = info.timerTime;
@@ -92,6 +95,13 @@ class Fields {
         rpm = info.currentCadence;
         heartRate =  info.currentHeartRate;
         maxHeartRate = info.maxHeartRate;
+        averagePower = info.averagePower;
+        currentPower = info.currentPower;
+        pushPwr(info.currentPower);
+        if (ready3sec){
+          power3Sec  = get3sPower();
+        }
+        trainingEffect = info.trainingEffect;
 
         elapsedDistance  = info.elapsedDistance;
 
