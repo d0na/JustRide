@@ -12,6 +12,7 @@ class LapInfo {
     hidden var lastElapsedTime = 0;
     hidden var lastTotAscent = 0;
     hidden var lapAvgRpm = 0;
+    hidden var lapAvgHR = 0;
     hidden var _lapAvgPower = 0;
     hidden var prevAlt = 0;
     hidden var curAlt = 0;
@@ -20,6 +21,7 @@ class LapInfo {
     hidden var tick = 0;
     hidden var tickPwr = 0;
     hidden var tickRPM = 0;
+    hidden var tickHR = 0;
 
     enum
     {
@@ -50,10 +52,12 @@ class LapInfo {
         me.lastTotAscent = info.totalAscent;
         me.lastElapsedTime = info.timerTime;
         me.lapAvgRpm = 0;
+        me.lapAvgHR = 0;
         me.tick = 0;
         me.tickPwr = 0;
         me.tickRPM = 0;
         me._lapAvgPower = 0;
+        me.tickHR = 0;
     }
 
 
@@ -159,11 +163,22 @@ class LapInfo {
         if (info.currentCadence != null && info.currentCadence > 0){
             tickRPM++;
             lapAvgRpm += info.currentCadence;
-            return lapAvgRpm/tick;
+            return lapAvgRpm/tickRPM;
         }
 
         return null;
     }
+
+//    function lapAvgHeartRate(){
+//
+//        if (info.currentHeartRate != null && info.currentHeartRate > 0){
+//            tickHR++;
+//            lapAvgHR += info.currentHeartRate;
+//            return lapAvgHR/tickHR;
+//        }
+//
+//        return null;
+//    }
 
     function lapAvgPower(){
             if (info.currentPower != null ){
