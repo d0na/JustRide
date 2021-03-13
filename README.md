@@ -1,3 +1,9 @@
+# JustRide
+
+Dev note:
+
+- https://github.com/libgdx/libgdx/wiki/Hiero - tool used to work with fonts and icons.
+
 # Different way to run Garmin Connect IQ application 
 Link to [Garmin Connect IQ](http://developer.garmin.com/connect-iq/). 
 
