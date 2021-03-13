@@ -1,20 +1,39 @@
 class Formatter {
 
     function timeOptHour(time) {
-        if (time == null) {
-            return "--:--";
+//         if (time == null) {
+//             return "--:--";
+//         }
+
+//         time = time /1000;
+//         var hour = (time / 3600).toLong();
+//         var minute = (time / 60).toLong() - (hour * 60);
+//         var second = time - (minute * 60) - (hour * 3600);
+
+// //        if (hour > 0) {
+//             return Lang.format("$1$:$2$:$3$", [hour.format("%d"), minute.format("%02d"), second.format("%02d")]);
+// //        } else {
+// //            return Lang.format("$1$:$2$", [minute.format("%02d"), second.format("%02d")]);
+// //        }
+
+
+
+
+          var lapTime = "--:--";
+
+        if (time != 0) {
+            var hour = (time / (1000 * 60 * 60)) % 24;
+            var minute = (time / (1000 * 60)) % 60;
+            var second = (time / 1000) % 60;
+// if (lapTime >= 3600) {
+// lapTime = Lang.format("$1$:$2$:$3$", [hour.format("%d"), minute.format("%02d"), second.format("%02d")]);
+// } else {
+// lapTime = Lang.format("$1$:$2$", [minute.format("%d"), second.format("%02d")]);
+            lapTime = Lang.format("$1$:$2$:$3$", [hour.format("%d"), minute.format("%02d"), second.format("%02d")]);
+// }
+// return lapTime;
         }
-
-        time = time /1000;
-        var hour = (time / 3600).toLong();
-        var minute = (time / 60).toLong() - (hour * 60);
-        var second = time - (minute * 60) - (hour * 3600);
-
-//        if (hour > 0) {
-            return Lang.format("$1$:$2$:$3$", [hour.format("%d"), minute.format("%02d"), second.format("%02d")]);
-//        } else {
-//            return Lang.format("$1$:$2$", [minute.format("%02d"), second.format("%02d")]);
-//        }
+        return lapTime;  
     }
 
     function distance(dst) {
@@ -70,13 +89,21 @@ class Formatter {
         }
     }
 
-    function number(val){
+     function number2d(val){
+        if (val == null ){
+            return "0";
+        }
+
+        return val.format("%.1f");
+     }
+
+     function number(val){
         if (val == null ){
             return "0";
         }
 
         return val;
-    }
+     }
 
      function clock(clock) {
         var h = clock.hour;
