@@ -4,3 +4,4 @@
 .sandbox/
 build/
 out/
+properties.mk
