@@ -32,6 +32,9 @@ using Toybox.AntPlus as Ant;
 
 class JustRideView extends WatchUi.DataField {
 
+    const FTP = 277;
+    const WEIGHT = 74;
+
     enum
     {
         STOPPED,
@@ -56,6 +59,7 @@ class JustRideView extends WatchUi.DataField {
     hidden var fmt;
 
     function initialize() {
+        DataField.initialize();
         fields = new Fields();
         lapInfo = new LapInfo();
         hrInfo = new HRInfo();
@@ -152,6 +156,8 @@ class JustRideView extends WatchUi.DataField {
         dc.drawLine(dc.getWidth()/2, LINE_C, dc.getWidth()/2, LINE_D);
     }
 
+
+    //main drawing function. It contains all the drawing functions useful for composing the screens
     function drawBoxes(dc){
         drawBoxA_Left(dc);
         drawBoxA_Right(dc);
@@ -159,10 +165,10 @@ class JustRideView extends WatchUi.DataField {
         drawBoxC(dc);
         drawBottomLeftBox(dc);
         drawBottomRightBox(dc);
-        drawFootertBox(dc);
+        // drawFootertBox(dc);
     }
 
-    /* BOX A */
+    /* BOX A (LAP  Elapsed Time/Distance) */
     function drawBoxA_Left(dc){
 
         var lapElapsedDistance = lapInfo.elapsedDistance();
@@ -193,7 +199,7 @@ class JustRideView extends WatchUi.DataField {
         dc.setColor(Gfx.COLOR_BLACK, BACKGROUND_COLOR);
     }
 
-    /* BOX C */
+    /* BOX C - (LAP CLIMB info Ascent and VAM) */
     function drawBoxA_Right(dc){
         //ASC
         textAR(dc, dc.getWidth()-4, LINE_0+15, Gfx.FONT_XTINY,  "ASC");
@@ -278,31 +284,51 @@ class JustRideView extends WatchUi.DataField {
     }
 
 
+    // POWER SECTION
     function drawBoxC(dc){
 
-            var refLine = LINE_A;
+        var refLine = LINE_A;
 
-            drawPowerChart(dc);
+        // Power BAR
+        drawPowerChart(dc);
 
-            textC(dc, dc.getWidth()/2, refLine+46, Gfx.FONT_NUMBER_HOT, fmt.number(fields.power3Sec));
-            textCC(dc, dc.getWidth()/2+40,refLine+37, Gfx.FONT_XTINY,  "W");
-            textCC(dc, dc.getWidth()/2+40,refLine+47, Gfx.FONT_XTINY,  "3s");
+        // 3seconds POWER
+        textC(dc, dc.getWidth()/2, refLine+46, Gfx.FONT_NUMBER_HOT, fmt.number(fields.power3Sec));
+        textCC(dc, dc.getWidth()/2+40,refLine+37, Gfx.FONT_XTINY,  "W");
+        textCC(dc, dc.getWidth()/2+40,refLine+47, Gfx.FONT_XTINY,  "3s");
 
-            textLC(dc, 6, refLine+35, Gfx.FONT_SMALL,  "____");
-            textLC(dc, 6, refLine+50, Gfx.FONT_SMALL,  fmt.number(lapInfo.lapAvgPower()));
-            textAL(dc, 35,refLine+47, Gfx.FONT_XTINY,  "W");
+        // Lap AVG Power
+        textLC(dc, 6, refLine+20, Gfx.FONT_SMALL,  "____");
+        textLC(dc, 6, refLine+35, Gfx.FONT_SMALL,  fmt.number(lapInfo.lapAvgPower()));
+        textAL(dc, 35,refLine+32, Gfx.FONT_XTINY,  "W");
 
-            var powerZone =  getPowerZone(fields.power3Sec,274);
+        var ftpPerc = FTPPercentage(fields.power3Sec,FTP);
+        textLC(dc, 16, refLine+55, Gfx.FONT_SMALL,  fmt.number(ftpPerc));
+        textAL(dc, 35,refLine+45, Gfx.FONT_XTINY,  "%");
+        textAL(dc, 35,refLine+53, Gfx.FONT_XTINY,  "ftp");
 
-            textLC(dc, dc.getWidth()-25, refLine+50, Gfx.FONT_SMALL,  fmt.number2d(powerZone));
-            textAL(dc, dc.getWidth()-32,refLine+47, Gfx.FONT_XTINY,  "Z");
 
-            if(powerZone != null && powerZone > 0){
-                var zoneArrow = ((powerZone-1)/7)*dc.getWidth();
-                drawVamIcon(dc,zoneArrow+9,refLine+6);
-            }
+        // W KG
+        var wKg =  getWattPerKilo(fields.power3Sec,WEIGHT);
+        textLC(dc, dc.getWidth()-45, refLine+50, Gfx.FONT_NUMBER_MILD,  fmt.number2d(wKg));
+        textAL(dc, dc.getWidth()-35,refLine+23, Gfx.FONT_XTINY,  "w/Kg");
+
+        // Power Zone
+        var powerZone =  getPowerZone(fields.power3Sec,FTP);
+        // textLC(dc, dc.getWidth()-25, refLine+50, Gfx.FONT_SMALL,  fmt.number2d(powerZone));
+        // textAL(dc, dc.getWidth()-32,refLine+47, Gfx.FONT_XTINY,  "Z");
+
+        // Power Zone indicator on the Power Bar
+        if(powerZone != null && powerZone > 0){
+            var zoneArrow = ((powerZone-1)/7)*dc.getWidth();
+            drawVamIcon(dc,zoneArrow+9,refLine+6);
+        }
     }
 
+
+
+
+    // HEART    
     function drawBottomLeftBox(dc){
         /* BOX E */
         //top Left
@@ -318,6 +344,7 @@ class JustRideView extends WatchUi.DataField {
         textAR(dc, (dc.getWidth()/2)-3,LINE_C+52 , Gfx.FONT_SMALL, fmt.simple(fields.maxHeartRate));
     }
 
+    // CADENCE 
     function drawBottomRightBox(dc){
         /* BOX F */
         //top Left
@@ -328,24 +355,25 @@ class JustRideView extends WatchUi.DataField {
         textAR(dc, dc.getWidth()-5, LINE_C+52 , Gfx.FONT_SMALL, fmt.simple(lapInfo.lapAvgCadence())) ;
     }
 
-    function drawFootertBox(dc){
-            dc.setColor(Gfx.COLOR_BLUE, Gfx.COLOR_TRANSPARENT);
-            textAR(dc, 43, LINE_D+4, Gfx.FONT_SMALL,  fmt.distance(fields.elapsedDistance));// fields.elapsedDistance
-            dc.setColor(Gfx.COLOR_LT_GRAY, Gfx.COLOR_TRANSPARENT);  //reset colors
-            textAL(dc, 46, LINE_D+7,  Gfx.FONT_XTINY,   "Dst");
-            dc.setColor(Gfx.COLOR_BLUE, Gfx.COLOR_TRANSPARENT);  //reset colors
 
-            textAR(dc, dc.getWidth()/2+7, LINE_D+4, Gfx.FONT_SMALL,   fmt.speed(fields.avgSpeed)); // fields.avgSpeed
-            dc.setColor(Gfx.COLOR_LT_GRAY, Gfx.COLOR_TRANSPARENT);  //reset colors
-            textAL(dc, (dc.getWidth()/2)+11, LINE_D+7,  Gfx.FONT_XTINY,   "Avg");
-            dc.setColor(Gfx.COLOR_BLUE, Gfx.COLOR_TRANSPARENT);  //reset colors
+//     function drawFootertBox(dc){
+//             dc.setColor(Gfx.COLOR_BLUE, Gfx.COLOR_TRANSPARENT);
+//             textAR(dc, 43, LINE_D+4, Gfx.FONT_SMALL,  fmt.distance(fields.elapsedDistance));// fields.elapsedDistance
+//             dc.setColor(Gfx.COLOR_LT_GRAY, Gfx.COLOR_TRANSPARENT);  //reset colors
+//             textAL(dc, 46, LINE_D+7,  Gfx.FONT_XTINY,   "Dst");
+//             dc.setColor(Gfx.COLOR_BLUE, Gfx.COLOR_TRANSPARENT);  //reset colors
 
-            textAR(dc, (3*dc.getWidth()/4)+28, LINE_D+4, Gfx.FONT_SMALL,   fmt.elevation(fields.totalAscent));//fields.totalAscent
-            dc.setColor(Gfx.COLOR_LT_GRAY, Gfx.COLOR_TRANSPARENT);  //reset colors
-            textAL(dc, dc.getWidth()-18, LINE_D+7,  Gfx.FONT_XTINY,   "Asc");
-            dc.setColor(Gfx.COLOR_LT_GRAY, BACKGROUND_COLOR);  //reset colors
+//             textAR(dc, dc.getWidth()/2+7, LINE_D+4, Gfx.FONT_SMALL,   fmt.speed(fields.avgSpeed)); // fields.avgSpeed
+//             dc.setColor(Gfx.COLOR_LT_GRAY, Gfx.COLOR_TRANSPARENT);  //reset colors
+//             textAL(dc, (dc.getWidth()/2)+11, LINE_D+7,  Gfx.FONT_XTINY,   "Avg");
+//             dc.setColor(Gfx.COLOR_BLUE, Gfx.COLOR_TRANSPARENT);  //reset colors
 
-    }
+//             textAR(dc, (3*dc.getWidth()/4)+28, LINE_D+4, Gfx.FONT_SMALL,   fmt.elevation(fields.totalAscent));//fields.totalAscent
+//             dc.setColor(Gfx.COLOR_LT_GRAY, Gfx.COLOR_TRANSPARENT);  //reset colors
+//             textAL(dc, dc.getWidth()-18, LINE_D+7,  Gfx.FONT_XTINY,   "Asc");
+//             dc.setColor(Gfx.COLOR_LT_GRAY, BACKGROUND_COLOR);  //reset colors
+
+//     }
 
     function showBlinkingHeart(dc,hr){
         var time = System.getClockTime();
@@ -426,7 +454,7 @@ class JustRideView extends WatchUi.DataField {
 
         if (power == null) {
             return ;
-        }
+        } else 
 
         //Zone 7 > 150%
         if(power > ftp*1.5){
@@ -472,8 +500,30 @@ class JustRideView extends WatchUi.DataField {
         //Zone 1 > 0%
         } else if (power > 0){
             return 1+(power.toFloat()/(ftp*0.55));
+        } else {
+            return;
         }
     }
+
+
+    function getWattPerKilo(currentWatt,weight){
+        if (currentWatt != null && weight != null){
+           return currentWatt.toFloat()/weight;
+        }
+
+        return 0.0;
+    }
+
+
+    function FTPPercentage(currentWatt,ftp){
+        if (currentWatt != null && ftp != null){
+           return (currentWatt.toFloat()/ftp*100).toNumber();
+        }
+
+        return 0;
+    }
+
+
 
 
     const BLOCK = 29;
